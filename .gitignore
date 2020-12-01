@@ -3,3 +3,6 @@
 ################################################################################
 
 /QuartzJobCenter.Host/bin/Debug/net5.0
+/.vs/QuartzJobCenter
+/QuartzJobCenter.Models/bin/Debug/netcoreapp3.1
+/QuartzJobCenter.Models/obj
