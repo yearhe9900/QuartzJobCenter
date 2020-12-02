@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Quartz;
 using QuartzJobCenter.Common.Define;
+using QuartzJobCenter.Common.Helper;
+using QuartzJobCenter.Models.Model;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -68,11 +70,11 @@ namespace QuartzJobCenter.Jobs
                 double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数                                
                 loginfo.EndTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 loginfo.Seconds = seconds;
-                loginfo.Result = $"<span class='result'>{result.MaxLeft(1000)}</span>";
+                loginfo.Result = $"<span class='result'>{result}</span>";
                 if (!response.IsSuccessStatusCode)
                 {
-                    loginfo.ErrorMsg = $"<span class='error'>{result.MaxLeft(3000)}</span>";
-                    await ErrorAsync(loginfo.JobName, new Exception(result.MaxLeft(3000)), JsonConvert.SerializeObject(loginfo), mailMessage);
+                    loginfo.ErrorMsg = $"<span class='error'>{result}</span>";
+                    await ErrorAsync(loginfo.JobName, new Exception(result), JsonConvert.SerializeObject(loginfo), mailMessage);
                     context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = JsonConvert.SerializeObject(loginfo);
                 }
                 else
@@ -122,7 +124,7 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Warning(msg);
             if (mailMessage == MailMessageEnum.All)
             {
-                await new SetingController().SendMail(new Model.SendMailModel()
+                await new SetingController().SendMail(new SendMailModel()
                 {
                     Title = $"任务调度-{title}【警告】消息",
                     Content = msg
@@ -135,7 +137,7 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Information(msg);
             if (mailMessage == MailMessageEnum.All)
             {
-                await new SetingController().SendMail(new Model.SendMailModel()
+                await new SetingController().SendMail(new SendMailModel()
                 {
                     Title = $"任务调度-{title}消息",
                     Content = msg
@@ -148,7 +150,7 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Error(ex, msg);
             if (mailMessage == MailMessageEnum.Err || mailMessage == MailMessageEnum.All)
             {
-                await new SetingController().SendMail(new Model.SendMailModel()
+                await new SetingController().SendMail(new SendMailModel()
                 {
                     Title = $"任务调度-{title}【异常】消息",
                     Content = msg

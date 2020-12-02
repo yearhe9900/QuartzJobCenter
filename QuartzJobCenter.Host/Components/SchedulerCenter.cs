@@ -1,5 +1,6 @@
 ﻿using Quartz;
 using QuartzJobCenter.Common.Define;
+using QuartzJobCenter.Jobs;
 using QuartzJobCenter.Models.Entities;
 using QuartzJobCenter.Models.Response;
 using System;
@@ -62,7 +63,7 @@ namespace QuartzJobCenter.Host.Components
 
                     // 告诉Quartz使用我们的触发器来安排作业
                     await _scheduler.ScheduleJob(job, trigger);
-                    result.Code = 200;
+                    result.Code = (int)ResponseCodeEnum.Success;
                 }
             }
             catch (Exception ex)

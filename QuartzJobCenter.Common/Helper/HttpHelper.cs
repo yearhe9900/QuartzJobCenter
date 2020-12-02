@@ -41,7 +41,7 @@ namespace QuartzJobCenter.Common.Helper
         /// <param name="jsonString">请求参数（Json字符串）</param>
         /// <param name="headers">webapi做用户认证</param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> PostAsync(string url, string jsonString, Dictionary<string, string> headers = null)
+        public async Task<HttpResponseMessage> PostAsync(string url, string jsonString, Dictionary<string, string> headers = null)
         {
             if (string.IsNullOrWhiteSpace(jsonString))
                 jsonString = "{}";
@@ -73,7 +73,7 @@ namespace QuartzJobCenter.Common.Helper
         /// <param name="content">请求参数</param>
         /// <param name="headers">webapi做用户认证</param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> PostAsync<T>(string url, T content, Dictionary<string, string> headers = null) where T : class
+        public async Task<HttpResponseMessage> PostAsync<T>(string url, T content, Dictionary<string, string> headers = null) where T : class
         {
             return await PostAsync(url, JsonConvert.SerializeObject(content), headers);
         }
@@ -84,7 +84,7 @@ namespace QuartzJobCenter.Common.Helper
         /// <param name="url">url地址</param>
         /// <param name="headers">webapi做用户认证</param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> GetAsync(string url, Dictionary<string, string> headers = null)
+        public async Task<HttpResponseMessage> GetAsync(string url, Dictionary<string, string> headers = null)
         {
             if (headers != null && headers.Any())
             {
@@ -112,7 +112,7 @@ namespace QuartzJobCenter.Common.Helper
         /// <param name="jsonString">请求参数（Json字符串）</param>
         /// <param name="headers">webapi做用户认证</param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> PutAsync(string url, string jsonString, Dictionary<string, string> headers = null)
+        public async Task<HttpResponseMessage> PutAsync(string url, string jsonString, Dictionary<string, string> headers = null)
         {
             if (string.IsNullOrWhiteSpace(jsonString))
                 jsonString = "{}";
@@ -145,7 +145,7 @@ namespace QuartzJobCenter.Common.Helper
         /// <param name="content">请求参数</param>
         /// <param name="headers">webapi做用户认证</param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> PutAsync<T>(string url, T content, Dictionary<string, string> headers = null)
+        public async Task<HttpResponseMessage> PutAsync<T>(string url, T content, Dictionary<string, string> headers = null)
         {
             return await PutAsync(url, JsonConvert.SerializeObject(content), headers);
         }
@@ -156,7 +156,7 @@ namespace QuartzJobCenter.Common.Helper
         /// <param name="url"></param>
         /// <param name="headers">webapi做用户认证</param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> DeleteAsync(string url, Dictionary<string, string> headers = null)
+        public async Task<HttpResponseMessage> DeleteAsync(string url, Dictionary<string, string> headers = null)
         {
             if (headers != null && headers.Any())
             {
