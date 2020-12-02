@@ -124,7 +124,7 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Warning(msg);
             if (mailMessage == MailMessageEnum.All)
             {
-                await new SetingController().SendMail(new SendMailModel()
+                await new SendMail(new SendMailModel()
                 {
                     Title = $"任务调度-{title}【警告】消息",
                     Content = msg
@@ -137,7 +137,7 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Information(msg);
             if (mailMessage == MailMessageEnum.All)
             {
-                await new SetingController().SendMail(new SendMailModel()
+                await new SendMail(new SendMailModel()
                 {
                     Title = $"任务调度-{title}消息",
                     Content = msg
@@ -150,7 +150,7 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Error(ex, msg);
             if (mailMessage == MailMessageEnum.Err || mailMessage == MailMessageEnum.All)
             {
-                await new SetingController().SendMail(new SendMailModel()
+                await new SendMail(new SendMailModel()
                 {
                     Title = $"任务调度-{title}【异常】消息",
                     Content = msg
