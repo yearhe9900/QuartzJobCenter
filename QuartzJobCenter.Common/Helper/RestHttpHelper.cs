@@ -64,6 +64,48 @@ namespace QuartzJobCenter.Common.Helper
 
         #endregion
 
+        #region POST请求
+
+        /// <summary>
+        /// POST请求
+        /// </summary>
+        /// <param name="url">url地址</param>
+        /// <param name="headers">请求头</param>
+        /// <returns></returns>
+        public async Task<IRestResponse> PostAsync(string url, Dictionary<string, string> headers = null)
+        {
+            var (client, uri) = GetRestClient(url);
+            var localPath = uri.LocalPath;
+            var query = uri.Query[1..];
+            var request = new RestRequest(localPath, Method.POST);//创建一个POST请求
+            AddQueryParameters(request, query);
+            AddRequestHeader(request, headers);
+            return await client.ExecuteAsync(request);
+        }
+
+        /// <summary>
+        /// POST请求
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url">url地址</param>
+        /// <param name="t">Body实体</param>
+        /// <param name="headers">请求头</param>
+        /// <returns></returns>
+        public async Task<IRestResponse> PostAsync<T>(string url, T t, Dictionary<string, string> headers = null)
+        {
+            var (client, uri) = GetRestClient(url);
+            var localPath = uri.LocalPath;
+            var query = uri.Query[1..];
+            var request = new RestRequest(localPath, Method.POST);//创建一个POST请求
+            AddQueryParameters(request, query);
+            AddRequestHeader(request, headers);
+            request.AddJsonBody(t);
+            return await client.ExecuteAsync(request);
+        }
+
+        #endregion
+
+
         #region 私有方法 
 
         /// <summary>
