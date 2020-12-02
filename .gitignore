@@ -2,12 +2,12 @@
 # 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
 ################################################################################
 
-/.vs/*
-/QuartzJobCenter.Host/bin/*
-/QuartzJobCenter.Host/obj/*
-/QuartzJobCenter.Models/bin/*
-/QuartzJobCenter.Models/obj/*
-/QuartzJobCenter.Common/bin/*
-/QuartzJobCenter.Common/obj/*
-/QuartzJobCenter.Jobs/bin/*
-/QuartzJobCenter.Jobs/obj/*
+/.vs/
+/QuartzJobCenter.Host/bin/
+/QuartzJobCenter.Host/obj/
+/QuartzJobCenter.Models/bin/
+/QuartzJobCenter.Models/obj/
+/QuartzJobCenter.Common/bin/
+/QuartzJobCenter.Common/obj/
+/QuartzJobCenter.Jobs/bin/
+/QuartzJobCenter.Jobs/obj/
