@@ -190,7 +190,7 @@
       },
       "QuartzJobCenter.Common/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v3.1",
+        "framework": ".NETCoreApp,Version=v5.0",
         "compile": {
           "bin/placeholder/QuartzJobCenter.Common.dll": {}
         },
@@ -200,7 +200,7 @@
       },
       "QuartzJobCenter.Models/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v3.1",
+        "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
           "QuartzJobCenter.Common": "1.0.0"
         },
