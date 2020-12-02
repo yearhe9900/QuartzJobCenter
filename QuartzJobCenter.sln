@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartzJobCenter.Models", "Q
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartzJobCenter.Common", "QuartzJobCenter.Common\QuartzJobCenter.Common.csproj", "{C427408B-6720-46E5-B556-734A735B5C63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartzJobCenter.Jobs", "QuartzJobCenter.Jobs\QuartzJobCenter.Jobs.csproj", "{0B195BC2-EF84-474B-B7A7-3CAE0FB8CFBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C427408B-6720-46E5-B556-734A735B5C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C427408B-6720-46E5-B556-734A735B5C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C427408B-6720-46E5-B556-734A735B5C63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B195BC2-EF84-474B-B7A7-3CAE0FB8CFBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B195BC2-EF84-474B-B7A7-3CAE0FB8CFBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B195BC2-EF84-474B-B7A7-3CAE0FB8CFBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B195BC2-EF84-474B-B7A7-3CAE0FB8CFBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

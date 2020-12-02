@@ -1,0 +1,4 @@
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Jobs\bin\Debug\netcoreapp3.1\QuartzJobCenter.Common.dll
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Jobs\obj\Debug\netcoreapp3.1\QuartzJobCenter.Jobs.csprojAssemblyReference.cache
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Jobs\obj\Debug\netcoreapp3.1\QuartzJobCenter.Jobs.AssemblyInfoInputs.cache
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Jobs\obj\Debug\netcoreapp3.1\QuartzJobCenter.Jobs.AssemblyInfo.cs
