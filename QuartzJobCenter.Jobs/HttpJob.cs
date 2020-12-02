@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Quartz;
 using QuartzJobCenter.Common.Define;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
