@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QuartzJobCenter.Host
+namespace QuartzJobCenter.Web
 {
     public class Startup
     {

@@ -3,8 +3,8 @@
 ################################################################################
 
 /.vs/
-/QuartzJobCenter.Host/bin/
-/QuartzJobCenter.Host/obj/
+/QuartzJobCenter.Web/bin/
+/QuartzJobCenter.Web/obj/
 /QuartzJobCenter.Models/bin/
 /QuartzJobCenter.Models/obj/
 /QuartzJobCenter.Common/bin/

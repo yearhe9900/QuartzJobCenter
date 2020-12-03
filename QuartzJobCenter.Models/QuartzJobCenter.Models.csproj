@@ -8,4 +8,8 @@
     <ProjectReference Include="..\QuartzJobCenter.Common\QuartzJobCenter.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\" />
+  </ItemGroup>
+
 </Project>

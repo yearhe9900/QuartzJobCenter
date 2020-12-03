@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using static QuartzJobCenter.Common.Define.EnumDefine;
 
-namespace QuartzJobCenter.Host.Components
+namespace QuartzJobCenter.Web.Components
 {
     public class SchedulerCenter
     {

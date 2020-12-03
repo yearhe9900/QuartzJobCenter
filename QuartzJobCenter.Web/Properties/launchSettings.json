@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "QuartzJobCenter.Host": {
+    "QuartzJobCenter.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

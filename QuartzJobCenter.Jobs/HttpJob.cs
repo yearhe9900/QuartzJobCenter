@@ -3,6 +3,7 @@ using Quartz;
 using QuartzJobCenter.Common.Define;
 using QuartzJobCenter.Common.Helper;
 using QuartzJobCenter.Models.Model;
+using RestSharp;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -33,14 +34,16 @@ namespace QuartzJobCenter.Jobs
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Restart(); //  开始监视代码运行时间
-            HttpResponseMessage response = new HttpResponseMessage();
+            IRestResponse response = default;
 
-            var loginfo = new LogInfoModel();
-            loginfo.Url = requestUrl;
-            loginfo.BeginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            loginfo.RequestType = requestType.ToString();
-            loginfo.Parameters = requestParameters;
-            loginfo.JobName = $"{context.JobDetail.Key.Group}.{context.JobDetail.Key.Name}";
+            var loginfo = new LogInfoModel
+            {
+                Url = requestUrl,
+                BeginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                RequestType = requestType.ToString(),
+                Parameters = requestParameters,
+                JobName = $"{context.JobDetail.Key.Group}.{context.JobDetail.Key.Name}"
+            };
 
             var logs = context.JobDetail.JobDataMap[ConstantDefine.LOGLIST] as List<string> ?? new List<string>();
             if (logs.Count >= maxLogCount)
@@ -48,7 +51,7 @@ namespace QuartzJobCenter.Jobs
 
             try
             {
-                var http = HttpHelper.Instance;
+                var http = RestHttpHelper.Instance;
                 switch (requestType)
                 {
                     case RequestTypeEnum.Get:
@@ -57,23 +60,23 @@ namespace QuartzJobCenter.Jobs
                     case RequestTypeEnum.Post:
                         response = await http.PostAsync(requestUrl, requestParameters, headers);
                         break;
-                    case RequestTypeEnum.Put:
-                        response = await http.PutAsync(requestUrl, requestParameters, headers);
-                        break;
-                    case RequestTypeEnum.Delete:
-                        response = await http.DeleteAsync(requestUrl, headers);
-                        break;
+                        //case RequestTypeEnum.Put:
+                        //    response = await http.PutAsync(requestUrl, requestParameters, headers);
+                        //    break;
+                        //case RequestTypeEnum.Delete:
+                        //    response = await http.DeleteAsync(requestUrl, headers);
+                        //    break;
                 }
-                var result = HttpUtility.HtmlEncode(await response.Content.ReadAsStringAsync());
+                var result = HttpUtility.HtmlEncode(response.Content);
 
                 stopwatch.Stop(); //  停止监视            
                 double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数                                
-                loginfo.EndTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                loginfo.EndTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                 loginfo.Seconds = seconds;
-                loginfo.Result = $"<span class='result'>{result}</span>";
-                if (!response.IsSuccessStatusCode)
+                loginfo.Result = result;
+                if (!response.IsSuccessful)
                 {
-                    loginfo.ErrorMsg = $"<span class='error'>{result}</span>";
+                    loginfo.ErrorMsg = result;
                     await ErrorAsync(loginfo.JobName, new Exception(result), JsonConvert.SerializeObject(loginfo), mailMessage);
                     context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = JsonConvert.SerializeObject(loginfo);
                 }
@@ -85,7 +88,7 @@ namespace QuartzJobCenter.Jobs
                         var httpResult = JsonConvert.DeserializeObject<HttpResultModel>(HttpUtility.HtmlDecode(result));
                         if (!httpResult.IsSuccess)
                         {
-                            loginfo.ErrorMsg = $"<span class='error'>{httpResult.ErrorMsg}</span>";
+                            loginfo.ErrorMsg = httpResult.ErrorMsg;
                             await ErrorAsync(loginfo.JobName, new Exception(httpResult.ErrorMsg), JsonConvert.SerializeObject(loginfo), mailMessage);
                             context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = JsonConvert.SerializeObject(loginfo);
                         }
@@ -102,14 +105,14 @@ namespace QuartzJobCenter.Jobs
             {
                 stopwatch.Stop(); //  停止监视            
                 double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数
-                loginfo.ErrorMsg = $"<span class='error'>{ex.Message} {ex.StackTrace}</span>";
+                loginfo.ErrorMsg = $"{ex.Message} {ex.StackTrace}";
                 context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = JsonConvert.SerializeObject(loginfo);
                 loginfo.Seconds = seconds;
                 await ErrorAsync(loginfo.JobName, ex, JsonConvert.SerializeObject(loginfo), mailMessage);
             }
             finally
             {
-                logs.Add($"<p>{JsonConvert.SerializeObject(loginfo)}</p>");
+                logs.Add(JsonConvert.SerializeObject(loginfo));
                 context.JobDetail.JobDataMap[ConstantDefine.LOGLIST] = logs;
                 double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数
                 if (seconds >= warnTime)//如果请求超过20秒，记录警告日志    
@@ -124,11 +127,11 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Warning(msg);
             if (mailMessage == MailMessageEnum.All)
             {
-                await new SendMail(new SendMailModel()
-                {
-                    Title = $"任务调度-{title}【警告】消息",
-                    Content = msg
-                });
+                //await new SendMail(new SendMailModel()
+                //{
+                //    Title = $"任务调度-{title}【警告】消息",
+                //    Content = msg
+                //});
             }
         }
 
@@ -137,11 +140,11 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Information(msg);
             if (mailMessage == MailMessageEnum.All)
             {
-                await new SendMail(new SendMailModel()
-                {
-                    Title = $"任务调度-{title}消息",
-                    Content = msg
-                });
+                //await new SendMail(new SendMailModel()
+                //{
+                //    Title = $"任务调度-{title}消息",
+                //    Content = msg
+                //});
             }
         }
 
@@ -150,11 +153,11 @@ namespace QuartzJobCenter.Jobs
             Log.Logger.Error(ex, msg);
             if (mailMessage == MailMessageEnum.Err || mailMessage == MailMessageEnum.All)
             {
-                await new SendMail(new SendMailModel()
-                {
-                    Title = $"任务调度-{title}【异常】消息",
-                    Content = msg
-                });
+                //await new SendMail(new SendMailModel()
+                //{
+                //    Title = $"任务调度-{title}【异常】消息",
+                //    Content = msg
+                //});
             }
         }
     }

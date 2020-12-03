@@ -1,8 +1,8 @@
 using System;
 
-namespace QuartzJobCenter.Models.Dtos
+namespace QuartzJobCenter.Models.Model
 {
-    public class ErrorViewDto
+    public class ErrorViewModel
     {
         public string RequestId { get; set; }
 

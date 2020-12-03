@@ -6,16 +6,16 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["QuartzJobCenter.Host/QuartzJobCenter.Host.csproj", "QuartzJobCenter.Host/"]
-RUN dotnet restore "QuartzJobCenter.Host/QuartzJobCenter.Host.csproj"
+COPY ["QuartzJobCenter.Web/QuartzJobCenter.Web.csproj", "QuartzJobCenter.Web/"]
+RUN dotnet restore "QuartzJobCenter.Web/QuartzJobCenter.Web.csproj"
 COPY . .
-WORKDIR "/src/QuartzJobCenter.Host"
-RUN dotnet build "QuartzJobCenter.Host.csproj" -c Release -o /app/build
+WORKDIR "/src/QuartzJobCenter.Web"
+RUN dotnet build "QuartzJobCenter.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "QuartzJobCenter.Host.csproj" -c Release -o /app/publish
+RUN dotnet publish "QuartzJobCenter.Web.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "QuartzJobCenter.Host.dll"]
+ENTRYPOINT ["dotnet", "QuartzJobCenter.Web.dll"]
