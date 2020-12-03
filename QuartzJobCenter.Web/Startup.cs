@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Quartz.Impl.AdoJobStore;
+using Quartz.Impl.AdoJobStore.Common;
+using QuartzJobCenter.Web.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +26,7 @@ namespace QuartzJobCenter.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddSingleton(GetScheduler());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +52,24 @@ namespace QuartzJobCenter.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+
+        private SchedulerCenter GetScheduler()
+        {
+            string dbProviderName = Configuration.GetSection("Quartz")["dbProviderName"];
+            string connectionString = Configuration.GetSection("Quartz")["connectionString"];
+            string driverDelegateType = dbProviderName switch
+            {
+                "MySql" => typeof(MySQLDelegate).AssemblyQualifiedName,
+                "SQLServer" => typeof(SqlServerDelegate).AssemblyQualifiedName,
+                "Npgsql" => typeof(PostgreSQLDelegate).AssemblyQualifiedName,
+                _ => throw new System.Exception("dbProviderName unreasonable"),
+            };
+            SchedulerCenter schedulerCenter = SchedulerCenter.Instance;
+            schedulerCenter.Setting(new DbProvider(dbProviderName, connectionString), driverDelegateType);
+
+            return schedulerCenter;
         }
     }
 }
