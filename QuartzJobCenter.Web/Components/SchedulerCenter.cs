@@ -1,10 +1,13 @@
 ﻿using Quartz;
+using Quartz.Impl.Matchers;
+using Quartz.Impl.Triggers;
 using QuartzJobCenter.Common.Define;
 using QuartzJobCenter.Jobs;
 using QuartzJobCenter.Models.Entities;
 using QuartzJobCenter.Models.Response;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using static QuartzJobCenter.Common.Define.EnumDefine;
 
@@ -21,6 +24,8 @@ namespace QuartzJobCenter.Web.Components
 
         public static SchedulerCenter Instance { get { return _lazy.Value; } }
 
+        private IScheduler Scheduler { get { return _scheduler; } }
+
         /// <summary>
         /// 添加调度任务
         /// </summary>
@@ -33,7 +38,7 @@ namespace QuartzJobCenter.Web.Components
             {
                 //检查任务是否已存在
                 var jobKey = new JobKey(entity.JobName, entity.JobGroup);
-                if (await _scheduler.CheckExists(jobKey))
+                if (await Scheduler.CheckExists(jobKey))
                 {
                     result.Code = (int)ResponseCodeEnum.Error;
                     result.Msg = "任务已存在";
@@ -62,7 +67,7 @@ namespace QuartzJobCenter.Web.Components
                     trigger = CreateTrigger(entity);
 
                     // 告诉Quartz使用我们的触发器来安排作业
-                    await _scheduler.ScheduleJob(job, trigger);
+                    await Scheduler.ScheduleJob(job, trigger);
                     result.Code = (int)ResponseCodeEnum.Success;
                 }
             }
@@ -74,6 +79,58 @@ namespace QuartzJobCenter.Web.Components
             return result;
         }
 
+        /// <summary>
+        /// 获取所有Job（详情信息 - 初始化页面调用）
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<JobInfoEntity>> GetAllJobAsync()
+        {
+            List<JobKey> jboKeyList = new List<JobKey>();
+            List<JobInfoEntity> jobInfoList = new List<JobInfoEntity>();
+            if (Scheduler != null)
+            {
+                var groupNames = await Scheduler.GetJobGroupNames();
+                foreach (var groupName in groupNames.OrderBy(t => t))
+                {
+                    jboKeyList.AddRange(await Scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(groupName)));
+                    jobInfoList.Add(new JobInfoEntity() { GroupName = groupName });
+                }
+                foreach (var jobKey in jboKeyList.OrderBy(t => t.Name))
+                {
+                    var jobDetail = await Scheduler.GetJobDetail(jobKey);
+                    var triggersList = await Scheduler.GetTriggersOfJob(jobKey);
+                    var triggers = triggersList.AsEnumerable().FirstOrDefault();
+
+                    var interval = string.Empty;
+                    if (triggers is SimpleTriggerImpl)
+                        interval = (triggers as SimpleTriggerImpl)?.RepeatInterval.ToString();
+                    else
+                        interval = (triggers as CronTriggerImpl)?.CronExpressionString;
+
+                    foreach (var jobInfo in jobInfoList)
+                    {
+                        if (jobInfo.GroupName == jobKey.Group)
+                        {
+                            jobInfo.JobInfoList.Add(new JobInfo()
+                            {
+                                Name = jobKey.Name,
+                                LastErrMsg = jobDetail.JobDataMap.GetString(ConstantDefine.EXCEPTION),
+                                RequestUrl = jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL),
+                                TriggerState = await Scheduler.GetTriggerState(triggers.Key),
+                                PreviousFireTime = triggers.GetPreviousFireTimeUtc()?.LocalDateTime,
+                                NextFireTime = triggers.GetNextFireTimeUtc()?.LocalDateTime,
+                                BeginTime = triggers.StartTimeUtc.LocalDateTime,
+                                Interval = interval,
+                                EndTime = triggers.EndTimeUtc?.LocalDateTime,
+                                Description = jobDetail.Description
+                            });
+                            continue;
+                        }
+                    }
+                }
+            }
+            return jobInfoList;
+        }
 
         /// <summary>
         /// 创建类型Cron的触发器

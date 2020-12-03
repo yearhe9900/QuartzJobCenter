@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Quartz" Version="3.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\QuartzJobCenter.Common\QuartzJobCenter.Common.csproj" />
   </ItemGroup>
 </Project>

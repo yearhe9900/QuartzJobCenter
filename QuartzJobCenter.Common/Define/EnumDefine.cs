@@ -37,7 +37,7 @@ namespace QuartzJobCenter.Common.Define
 
         public enum ResponseCodeEnum
         {
-            Success = 200,
+            Success = 0,
             Fail = 400,
             Error = 500
         }

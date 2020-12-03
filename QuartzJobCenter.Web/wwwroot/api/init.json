@@ -4,7 +4,7 @@
     "href": "page/welcome-1.html?t=1"
   },
   "logoInfo": {
-    "title": "LAYUI MINI",
+    "title": "任务调动中心",
     "image": "images/logo.png",
     "href": ""
   },
@@ -237,6 +237,46 @@
           "title": "失效菜单",
           "href": "page/error.html",
           "icon": "fa fa-superpowers",
+          "target": "_self"
+        }
+      ]
+    },
+    {
+      "title": "API调度",
+      "icon": "fa fa-slideshare",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "API任务列表",
+          "href": "ApiTask/Index",
+          "icon": "fa fa-table",
+          "target": "_self"
+        },
+        {
+          "title": "API日志",
+          "href": "ApiTask/LogView",
+          "icon": "fa fa-list",
+          "target": "_self"
+        }
+      ]
+    },
+    {
+      "title": "GRPC调度",
+      "icon": "fa fa-slideshare",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "GRPC任务列表",
+          "href": "GrpcTask/Index",
+          "icon": "fa fa-table",
+          "target": "_self"
+        },
+        {
+          "title": "GRPC日志",
+          "href": "GrpcTask/LogView",
+          "icon": "fa fa-list",
           "target": "_self"
         }
       ]
