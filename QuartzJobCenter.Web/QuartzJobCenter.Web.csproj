@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Quartz" Version="3.2.3" />
+    <PackageReference Include="Quartz.Serialization.Json" Version="3.2.3" />
   </ItemGroup>
 
   <ItemGroup>

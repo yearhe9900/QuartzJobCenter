@@ -1,6 +1,7 @@
 ﻿using Quartz;
 using Quartz.Impl.Matchers;
 using Quartz.Impl.Triggers;
+using Quartz.Util;
 using QuartzJobCenter.Common.Define;
 using QuartzJobCenter.Jobs;
 using QuartzJobCenter.Models.Entities;
@@ -10,12 +11,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static QuartzJobCenter.Common.Define.EnumDefine;
+using Quartz.Simpl;
+using Quartz.Impl.AdoJobStore;
+using Quartz.Impl;
+using Quartz.Impl.AdoJobStore.Common;
 
 namespace QuartzJobCenter.Web.Components
 {
     public class SchedulerCenter
     {
-        private readonly IScheduler _scheduler;
+        private IScheduler _scheduler;
+        private IDbProvider _dbProvider;
+        private string _driverDelegateType;
 
         /// <summary>
         /// 任务调度对象
@@ -24,7 +31,49 @@ namespace QuartzJobCenter.Web.Components
 
         public static SchedulerCenter Instance { get { return _lazy.Value; } }
 
-        private IScheduler Scheduler { get { return _scheduler; } }
+        /// <summary>
+        /// 配置Scheduler 仅初始化时生效
+        /// </summary>
+        /// <param name="dbProvider"></param>
+        /// <param name="driverDelegateType"></param>
+        public void Setting(IDbProvider dbProvider, string driverDelegateType)
+        {
+            _driverDelegateType = driverDelegateType;
+            _dbProvider = dbProvider;
+        }
+
+        private IScheduler Scheduler
+        {
+            get
+            {
+                if (_scheduler != null)
+                {
+                    return _scheduler;
+                }
+
+                if (_dbProvider == null || string.IsNullOrEmpty(_driverDelegateType))
+                {
+                    throw new Exception("dbProvider or driverDelegateType is null");
+                }
+
+                DBConnectionManager.Instance.AddConnectionProvider("default", _dbProvider);
+                var serializer = new JsonObjectSerializer();
+                serializer.Initialize();
+                var jobStore = new JobStoreTX
+                {
+                    DataSource = "default",
+                    TablePrefix = "QRTZ_",
+                    InstanceId = "AUTO",
+                    DriverDelegateType = _driverDelegateType,
+                    ObjectSerializer = serializer,
+                };
+                DirectSchedulerFactory.Instance.CreateScheduler("benny" + "Scheduler", "AUTO", new DefaultThreadPool(), jobStore);
+                _scheduler = SchedulerRepository.Instance.Lookup("benny" + "Scheduler").Result;
+
+                _scheduler.Start();//默认开始调度器
+                return _scheduler;
+            }
+        }
 
         /// <summary>
         /// 添加调度任务
