@@ -67,8 +67,9 @@ namespace QuartzJobCenter.Web.Components
                     DriverDelegateType = _driverDelegateType,
                     ObjectSerializer = serializer,
                 };
-                DirectSchedulerFactory.Instance.CreateScheduler("benny" + "Scheduler", "AUTO", new DefaultThreadPool(), jobStore);
-                _scheduler = SchedulerRepository.Instance.Lookup("benny" + "Scheduler").Result;
+                var schedulerName = "hzpScheduler";
+                DirectSchedulerFactory.Instance.CreateScheduler(schedulerName, "AUTO", new DefaultThreadPool(), jobStore);
+                _scheduler = SchedulerRepository.Instance.Lookup(schedulerName).Result;
 
                 _scheduler.Start();//默认开始调度器
                 return _scheduler;
