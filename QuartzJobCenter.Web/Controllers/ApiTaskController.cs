@@ -11,6 +11,13 @@ namespace QuartzJobCenter.Web.Controllers
 {
     public class ApiTaskController : Controller
     {
+        private SchedulerCenter _schedulerCenter;
+
+        public ApiTaskController(SchedulerCenter schedulerCenter)
+        {
+            _schedulerCenter = schedulerCenter;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -23,7 +30,7 @@ namespace QuartzJobCenter.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllApiTaskJobs()
         {
-            var allJobs = await SchedulerCenter.Instance.GetAllJobAsync();
+            var allJobs = await _schedulerCenter.GetAllJobAsync();
             var response = new TableResultResponse<List<JobInfoEntity>>()
             {
                 Count = 0,

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuartzJobCenter.Web.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;

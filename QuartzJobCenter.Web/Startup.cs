@@ -7,9 +7,6 @@ using Quartz.Impl.AdoJobStore;
 using Quartz.Impl.AdoJobStore.Common;
 using QuartzJobCenter.Web.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuartzJobCenter.Web
 {
@@ -54,7 +51,6 @@ namespace QuartzJobCenter.Web
             });
         }
 
-
         private SchedulerCenter GetScheduler()
         {
             string dbProviderName = Configuration.GetSection("Quartz")["dbProviderName"];
@@ -62,10 +58,11 @@ namespace QuartzJobCenter.Web
             string driverDelegateType = dbProviderName switch
             {
                 "MySql" => typeof(MySQLDelegate).AssemblyQualifiedName,
-                "SQLServer" => typeof(SqlServerDelegate).AssemblyQualifiedName,
+                "SqlServer" => typeof(SqlServerDelegate).AssemblyQualifiedName,
                 "Npgsql" => typeof(PostgreSQLDelegate).AssemblyQualifiedName,
-                _ => throw new System.Exception("dbProviderName unreasonable"),
+                _ => throw new Exception("dbProviderName unreasonable"),
             };
+
             SchedulerCenter schedulerCenter = SchedulerCenter.Instance;
             schedulerCenter.Setting(new DbProvider(dbProviderName, connectionString), driverDelegateType);
 
