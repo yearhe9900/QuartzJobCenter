@@ -48,7 +48,7 @@ namespace QuartzJobCenter.Models.Entities
         /// <summary>
         /// 触发器类型
         /// </summary>
-        public TriggerTypeEnum TriggerType { get; set; }
+        public TriggerTypeEnum TriggerType { get; set; } = TriggerTypeEnum.Cron;
 
         /// <summary>
         /// 请求url
@@ -76,6 +76,6 @@ namespace QuartzJobCenter.Models.Entities
         /// </summary>
         public string Description { get; set; }
 
-        public MailMessageEnum MailMessage { get; set; }
+        public MailMessageEnum MailMessage { get; set; } = MailMessageEnum.None;
     }
 }

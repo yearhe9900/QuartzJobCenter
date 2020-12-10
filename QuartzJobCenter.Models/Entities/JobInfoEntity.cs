@@ -15,14 +15,6 @@ namespace QuartzJobCenter.Models.Entities
         public string GroupName { get; set; }
 
         /// <summary>
-        /// 任务信息
-        /// </summary>
-        public List<JobInfo> JobInfoList { get; set; } = new List<JobInfo>();
-    }
-
-    public class JobInfo
-    {
-        /// <summary>
         /// 任务名称
         /// </summary>
         public string Name { get; set; }

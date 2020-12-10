@@ -83,7 +83,7 @@ namespace QuartzJobCenter.Web.Components
         /// <returns></returns>
         public async Task<BaseResultResponse> AddScheduleJobAsync(ScheduleEntity entity)
         {
-            var result = new BaseResultResponse();
+            var result = new BaseResultResponse() { Msg = "添加任务成功！" };
             try
             {
                 //检查任务是否已存在
@@ -161,19 +161,16 @@ namespace QuartzJobCenter.Web.Components
                     {
                         if (jobInfo.GroupName == jobKey.Group)
                         {
-                            jobInfo.JobInfoList.Add(new JobInfo()
-                            {
-                                Name = jobKey.Name,
-                                LastErrMsg = jobDetail.JobDataMap.GetString(ConstantDefine.EXCEPTION),
-                                RequestUrl = jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL),
-                                TriggerState = await Scheduler.GetTriggerState(triggers.Key),
-                                PreviousFireTime = triggers.GetPreviousFireTimeUtc()?.LocalDateTime,
-                                NextFireTime = triggers.GetNextFireTimeUtc()?.LocalDateTime,
-                                BeginTime = triggers.StartTimeUtc.LocalDateTime,
-                                Interval = interval,
-                                EndTime = triggers.EndTimeUtc?.LocalDateTime,
-                                Description = jobDetail.Description
-                            });
+                            jobInfo.Name = jobKey.Name;
+                            jobInfo.LastErrMsg = jobDetail.JobDataMap.GetString(ConstantDefine.EXCEPTION);
+                            jobInfo.RequestUrl = jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL);
+                            jobInfo.TriggerState = await Scheduler.GetTriggerState(triggers.Key);
+                            jobInfo.PreviousFireTime = triggers.GetPreviousFireTimeUtc()?.LocalDateTime;
+                            jobInfo.NextFireTime = triggers.GetNextFireTimeUtc()?.LocalDateTime;
+                            jobInfo.BeginTime = triggers.StartTimeUtc.LocalDateTime;
+                            jobInfo.Interval = interval;
+                            jobInfo.EndTime = triggers.EndTimeUtc?.LocalDateTime;
+                            jobInfo.Description = jobDetail.Description;
                             continue;
                         }
                     }

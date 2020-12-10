@@ -27,6 +27,11 @@ namespace QuartzJobCenter.Web.Controllers
             return View();
         }
 
+        public IActionResult AddJobView()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllApiTaskJobs()
         {
@@ -36,6 +41,18 @@ namespace QuartzJobCenter.Web.Controllers
                 Count = 0,
                 Data = allJobs
             };
+            return new JsonResult(response);
+        }
+
+        /// <summary>
+        /// 添加任务
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> AddJob(ScheduleEntity entity)
+        {
+            var response = await _schedulerCenter.AddScheduleJobAsync(entity);
             return new JsonResult(response);
         }
     }

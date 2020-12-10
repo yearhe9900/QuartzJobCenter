@@ -64,17 +64,17 @@
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter'],
             cols: [[
-                {field: 'id', width: 80, title: 'ID'},
-                {field: 'username', width: 80, title: '任务名称'},
-                {field: 'sex', width: 80, title: '状态'},
-                {field: 'city', width: 80, title: 'Url'},
-                {field: 'sign', title: '异常信息', minWidth: 150},
-                {field: 'experience', width: 80, title: '开始时间'},
-                {field: 'score', width: 80, title: '上次执行时间'},
-                {field: 'classify', width: 80, title: '下次执行时间'},
-                { field: 'wealth', width: 135, title: '执行计划' },
-                { field: 'classify', width: 80, title: '描述' },
-                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+                { field: 'groupName',  title: '任务组名'},
+                { field: 'name',  title: '任务名称'},
+                { field: 'displayState', title: '任务状态'},
+                { field: 'requestUrl', maxWidth: 200, title: '请求地址'},
+                { field: 'lastErrMsg', title: '异常信息', maxWidth: 150},
+                { field: 'beginTime', title: '开始时间'},
+                { field: 'previousFireTime', title: '上次执行时间'},
+                { field: 'nextFireTime', title: '下次执行时间'},
+                { field: 'interval', width: 135, title: '执行计划' },
+                { field: 'description', maxWidth: 150, title: '描述' },
+                { title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 20,
@@ -84,11 +84,6 @@
 
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
-            var result = JSON.stringify(data.field);
-            layer.alert(result, {
-                title: '最终的搜索信息'
-            });
-
             //执行搜索重载
             table.reload('currentTableId', {
                 page: {
@@ -114,7 +109,7 @@
                     maxmin:true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '../page/table/add.html',
+                    content: '@Url.Action("AddJobView")',
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
