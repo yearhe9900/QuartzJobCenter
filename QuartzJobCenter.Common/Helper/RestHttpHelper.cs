@@ -52,7 +52,7 @@ namespace QuartzJobCenter.Common.Helper
         {
             var (client, uri) = GetRestClient(url);
             var localPath = uri.LocalPath;
-            var query = uri.Query[1..];
+            var query = string.IsNullOrWhiteSpace(uri.Query) ? uri.Query : uri.Query[1..];
             var request = new RestRequest(localPath, Method.GET);//创建一个GET请求
             AddQueryParameters(request, query);
             AddRequestHeader(request, headers);
@@ -76,7 +76,7 @@ namespace QuartzJobCenter.Common.Helper
         {
             var (client, uri) = GetRestClient(url);
             var localPath = uri.LocalPath;
-            var query = uri.Query[1..];
+            var query = string.IsNullOrWhiteSpace(uri.Query) ? uri.Query : uri.Query[1..];
             var request = new RestRequest(localPath, Method.POST);//创建一个POST请求
             AddQueryParameters(request, query);
             AddRequestHeader(request, headers);
@@ -95,7 +95,7 @@ namespace QuartzJobCenter.Common.Helper
         {
             var (client, uri) = GetRestClient(url);
             var localPath = uri.LocalPath;
-            var query = uri.Query[1..];
+            var query = string.IsNullOrWhiteSpace(uri.Query) ? uri.Query : uri.Query[1..];
             var request = new RestRequest(localPath, Method.POST);//创建一个POST请求
             AddQueryParameters(request, query);
             AddRequestHeader(request, headers);

@@ -38,13 +38,14 @@
 
             <script type="text/html" id="toolbarDemo">
                 <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+                    <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add">添加</button>
                 </div>
             </script>
 
             <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
 
             <script type="text/html" id="currentTableBar">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="log">日志</a>
                 <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
                 <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
             </script>
@@ -114,11 +115,7 @@
                 $(window).on("resize", function () {
                     layer.full(index);
                 });
-            } else if (obj.event === 'delete') {  // 监听删除操作
-                var checkStatus = table.checkStatus('currentTableId')
-                    , data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
-            }
+            } 
         });
 
         //监听表格复选框选择
@@ -148,6 +145,20 @@
                     obj.del();
                     layer.close(index);
                 });
+            } else if (obj.event === 'log') {
+                console.log(123132)
+                $.ajax({
+                    url: "@Url.Action("GetJobLogs")",
+                    data: { name: "3435", group:"3435"},
+                      type: "Get",
+                      dataType: "json",
+                      success: function (data) {
+                          layer.msg(data.Msg, { icon: 5 });
+                      },
+                      error: function (data) {
+                          $.messager.alert('错误', data.msg);
+                      }
+                  });
             }
         });
 

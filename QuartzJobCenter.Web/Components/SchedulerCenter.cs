@@ -77,6 +77,17 @@ namespace QuartzJobCenter.Web.Components
         }
 
         /// <summary>
+        /// 获取job日志
+        /// </summary>
+        /// <param name="jobKey"></param>
+        /// <returns></returns>
+        public async Task<List<string>> GetJobLogsAsync(JobKey jobKey)
+        {
+            var jobDetail = await Scheduler.GetJobDetail(jobKey);
+            return jobDetail.JobDataMap[ConstantDefine.LOGLIST] as List<string>;
+        }
+
+        /// <summary>
         /// 添加调度任务
         /// </summary>
         /// <param name="scheduleEntity"></param>
