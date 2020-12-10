@@ -64,9 +64,9 @@ namespace QuartzJobCenter.Web.Controllers
         /// <param name="group"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<string>> GetJobLogs(string name, string group)
+        public async Task<List<string>> GetJobLogs(string name, string groupName)
         {
-            var jobKey = new JobKey(name, group);
+            var jobKey = new JobKey(name, groupName);
             return await _schedulerCenter.GetJobLogsAsync(jobKey);
         }
 

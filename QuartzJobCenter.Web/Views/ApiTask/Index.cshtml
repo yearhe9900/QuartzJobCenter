@@ -146,10 +146,10 @@
                     layer.close(index);
                 });
             } else if (obj.event === 'log') {
-                console.log(123132)
+                console.log(data)
                 $.ajax({
                     url: "@Url.Action("GetJobLogs")",
-                    data: { name: "3435", group:"3435"},
+                    data: { name: data.name, groupName: data.groupName },
                       type: "Get",
                       dataType: "json",
                       success: function (data) {

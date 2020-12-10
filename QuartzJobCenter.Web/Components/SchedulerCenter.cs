@@ -154,7 +154,7 @@ namespace QuartzJobCenter.Web.Components
                 foreach (var groupName in groupNames.OrderBy(t => t))
                 {
                     jboKeyList.AddRange(await Scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(groupName)));
-                    jobInfoList.Add(new JobInfoEntity() { GroupName = groupName });
+
                 }
                 foreach (var jobKey in jboKeyList.OrderBy(t => t.Name))
                 {
@@ -168,23 +168,20 @@ namespace QuartzJobCenter.Web.Components
                     else
                         interval = (triggers as CronTriggerImpl)?.CronExpressionString;
 
-                    foreach (var jobInfo in jobInfoList)
+                    jobInfoList.Add(new JobInfoEntity
                     {
-                        if (jobInfo.GroupName == jobKey.Group)
-                        {
-                            jobInfo.Name = jobKey.Name;
-                            jobInfo.LastErrMsg = jobDetail.JobDataMap.GetString(ConstantDefine.EXCEPTION);
-                            jobInfo.RequestUrl = jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL);
-                            jobInfo.TriggerState = await Scheduler.GetTriggerState(triggers.Key);
-                            jobInfo.PreviousFireTime = triggers.GetPreviousFireTimeUtc()?.LocalDateTime;
-                            jobInfo.NextFireTime = triggers.GetNextFireTimeUtc()?.LocalDateTime;
-                            jobInfo.BeginTime = triggers.StartTimeUtc.LocalDateTime;
-                            jobInfo.Interval = interval;
-                            jobInfo.EndTime = triggers.EndTimeUtc?.LocalDateTime;
-                            jobInfo.Description = jobDetail.Description;
-                            continue;
-                        }
-                    }
+                        GroupName = jobKey.Group,
+                        Name = jobKey.Name,
+                        LastErrMsg = jobDetail.JobDataMap.GetString(ConstantDefine.EXCEPTION),
+                        RequestUrl = jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL),
+                        TriggerState = await Scheduler.GetTriggerState(triggers.Key),
+                        PreviousFireTime = triggers.GetPreviousFireTimeUtc()?.LocalDateTime,
+                        NextFireTime = triggers.GetNextFireTimeUtc()?.LocalDateTime,
+                        BeginTime = triggers.StartTimeUtc.LocalDateTime,
+                        Interval = interval,
+                        EndTime = triggers.EndTimeUtc?.LocalDateTime,
+                        Description = jobDetail.Description
+                    });
                 }
             }
             return jobInfoList;
