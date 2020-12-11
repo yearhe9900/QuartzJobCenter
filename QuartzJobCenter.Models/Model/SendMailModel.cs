@@ -1,5 +1,4 @@
-﻿
-namespace QuartzJobCenter.Models.Model
+﻿namespace QuartzJobCenter.Models.Model
 {
     public class SendMailModel
     {

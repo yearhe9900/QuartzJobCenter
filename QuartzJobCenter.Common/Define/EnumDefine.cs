@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace QuartzJobCenter.Common.Define
+﻿namespace QuartzJobCenter.Common.Define
 {
     public class EnumDefine
     {

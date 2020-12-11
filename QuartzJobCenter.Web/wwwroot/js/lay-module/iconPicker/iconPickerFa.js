@@ -8,8 +8,8 @@ layui.define(['laypage', 'form'], function (exports) {
     "use strict";
 
     var IconPicker = function () {
-            this.v = '1.1';
-        }, _MOD = 'iconPickerFa',
+        this.v = '1.1';
+    }, _MOD = 'iconPickerFa',
         _this = this,
         $ = layui.jquery,
         laypage = layui.laypage,
@@ -92,9 +92,7 @@ layui.define(['laypage', 'form'], function (exports) {
                 // 默认图标
                 if (ORIGINAL_ELEM_VALUE === '') {
                     ORIGINAL_ELEM_VALUE = 'fa-adjust';
-
                 }
-
 
                 oriIcon = '<i class="fa ' + ORIGINAL_ELEM_VALUE + '">';
 
@@ -236,7 +234,6 @@ layui.define(['laypage', 'form'], function (exports) {
                         '</div>';
                 }
 
-
                 $('#' + ICON_BODY).find('.layui-anim').find('.' + LIST_BOX).html('').append(listHtml).append(pageHtml);
                 return a;
             },
@@ -306,7 +303,6 @@ layui.define(['laypage', 'form'], function (exports) {
                         icon = cls;
                     $('#' + TITLE_ID).find('.layui-iconpicker-item .fa').html('').attr('class', clsArr.join(' '));
 
-
                     $('#' + ICON_BODY).removeClass(selected).addClass(unselect);
                     $(elem).val(icon).attr('value', icon);
                     // 回调
@@ -315,7 +311,6 @@ layui.define(['laypage', 'form'], function (exports) {
                             icon: icon
                         });
                     }
-
                 });
                 return a;
             },
@@ -326,7 +321,6 @@ layui.define(['laypage', 'form'], function (exports) {
                     var value = el.val();
                 })
                 // el.change(function(){
-
                 // });
                 return a;
             },

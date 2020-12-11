@@ -119,7 +119,6 @@
                     <div id="layuiminiHomeTabIframe" class="layui-tab-item layui-show"></div>
                 </div>
             </div>
-
         </div>
     </div>
     <script src="~/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
@@ -141,7 +140,7 @@
                 maxTabNum: 20,              // 最大的tab打开数量
             };
             miniAdmin.render(options);
-         
+
             $('.login-out').on("click", function () {
                 layer.msg('退出登录成功', function () {
                     window.location = 'page/login-3.html';

@@ -1,22 +1,20 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using RestSharp;
 
 namespace QuartzJobCenter.Common.Helper
 {
-
     public class RestHttpHelper
     {
         private static readonly Lazy<RestHttpHelper> lazy = new Lazy<RestHttpHelper>(() => new RestHttpHelper());
 
         public static RestHttpHelper Instance { get { return lazy.Value; } }
 
-        private RestHttpHelper() { }
+        private RestHttpHelper()
+        {
+        }
 
         /// <summary>
         /// 获取已保存的站点http客户端
@@ -62,7 +60,7 @@ namespace QuartzJobCenter.Common.Helper
             return await client.ExecuteAsync(request);
         }
 
-        #endregion
+        #endregion GET请求
 
         #region POST请求
 
@@ -103,10 +101,9 @@ namespace QuartzJobCenter.Common.Helper
             return await client.ExecuteAsync(request);
         }
 
-        #endregion
+        #endregion POST请求
 
-
-        #region 私有方法 
+        #region 私有方法
 
         /// <summary>
         /// 请求添加参数
@@ -142,6 +139,6 @@ namespace QuartzJobCenter.Common.Helper
             }
         }
 
-        #endregion
+        #endregion 私有方法
     }
 }

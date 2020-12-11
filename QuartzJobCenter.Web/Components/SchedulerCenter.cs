@@ -1,6 +1,10 @@
 ﻿using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.AdoJobStore;
+using Quartz.Impl.AdoJobStore.Common;
 using Quartz.Impl.Matchers;
 using Quartz.Impl.Triggers;
+using Quartz.Simpl;
 using Quartz.Util;
 using QuartzJobCenter.Common.Define;
 using QuartzJobCenter.Jobs;
@@ -11,10 +15,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static QuartzJobCenter.Common.Define.EnumDefine;
-using Quartz.Simpl;
-using Quartz.Impl.AdoJobStore;
-using Quartz.Impl;
-using Quartz.Impl.AdoJobStore.Common;
 
 namespace QuartzJobCenter.Web.Components
 {
@@ -116,7 +116,7 @@ namespace QuartzJobCenter.Web.Components
                     { ConstantDefine.HEADERS, entity.Headers},
                     { ConstantDefine.MAILMESSAGE, ((int)entity.MailMessage).ToString()},
                 };
-                    // 定义这个工作，并将其绑定到我们的IJob实现类                
+                    // 定义这个工作，并将其绑定到我们的IJob实现类
                     IJobDetail job = JobBuilder.Create<HttpJob>()
                         .SetJobData(new JobDataMap(httpDir))
                         .WithDescription(entity.Description)
@@ -154,7 +154,6 @@ namespace QuartzJobCenter.Web.Components
                 foreach (var groupName in groupNames.OrderBy(t => t))
                 {
                     jboKeyList.AddRange(await Scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(groupName)));
-
                 }
                 foreach (var jobKey in jboKeyList.OrderBy(t => t.Name))
                 {

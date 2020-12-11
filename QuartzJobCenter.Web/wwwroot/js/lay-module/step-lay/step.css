@@ -21,18 +21,18 @@
     top: 13px;
 }
 
-.step-item-tail i {
-    display: inline-block;
-    width: 100%;
-    height: 1px;
-    vertical-align: top;
-    background: #c2c2c2;
-    position: relative;
-}
+    .step-item-tail i {
+        display: inline-block;
+        width: 100%;
+        height: 1px;
+        vertical-align: top;
+        background: #c2c2c2;
+        position: relative;
+    }
 
-.step-item-tail .step-item-tail-done {
-    background: #009688;
-}
+    .step-item-tail .step-item-tail-done {
+        background: #009688;
+    }
 
 .step-item-head {
     position: relative;
@@ -47,10 +47,10 @@
     background: #ffffff;
 }
 
-.step-item-head.step-item-head-active {
-    background: #009688;
-    color: #ffffff;
-}
+    .step-item-head.step-item-head-active {
+        background: #009688;
+        color: #ffffff;
+    }
 
 .step-item-main {
     display: block;

@@ -9,7 +9,6 @@ layui.define(["jquery", "layer"], function (exports) {
         layer = layui.layer;
 
     var miniTheme = {
-
         /**
          * 主题配置项
          * @param bgcolorId
@@ -307,7 +306,7 @@ layui.define(["jquery", "layer"], function (exports) {
                 '/**头部右侧下拉字体颜色 headerRightChildColor */\n' +
                 '.layui-layout-admin .layui-header .layui-nav .layui-nav-item .layui-nav-child a {\n' +
                 '    color:  ' + bgcolorData.headerRightChildColor + '!important;\n' +
-                '}\n'+
+                '}\n' +
                 '\n' +
                 '/*头部右侧鼠标选中 headerRightColorThis */\n' +
                 '.layui-header .layuimini-menu-header-pc.layui-nav .layui-nav-item a:hover, .layui-header .layuimini-header-menu.layuimini-pc-show.layui-nav .layui-this a {\n' +
@@ -419,7 +418,7 @@ layui.define(["jquery", "layer"], function (exports) {
          */
         listen: function (options) {
             $('body').on('click', '[data-bgcolor]', function () {
-                var loading = layer.load(0, {shade: false, time: 2 * 1000});
+                var loading = layer.load(0, { shade: false, time: 2 * 1000 });
                 var clientHeight = (document.documentElement.clientHeight) - 60;
                 var bgColorHtml = miniTheme.buildBgColorHtml(options);
                 var html = '<div class="layuimini-color">\n' +
@@ -466,6 +465,5 @@ layui.define(["jquery", "layer"], function (exports) {
     };
 
     exports("miniTheme", miniTheme);
-
 })
-;
+    ;

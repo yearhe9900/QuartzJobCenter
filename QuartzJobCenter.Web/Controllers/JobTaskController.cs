@@ -3,9 +3,7 @@ using Quartz;
 using QuartzJobCenter.Models.Entities;
 using QuartzJobCenter.Models.Response;
 using QuartzJobCenter.Web.Components;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace QuartzJobCenter.Web.Controllers
@@ -23,6 +21,7 @@ namespace QuartzJobCenter.Web.Controllers
         {
             return View();
         }
+
         public IActionResult LogView()
         {
             return View();
@@ -87,7 +86,7 @@ namespace QuartzJobCenter.Web.Controllers
 
         ///// <summary>
         ///// 删除任务
-        ///// </summary> 
+        ///// </summary>
         ///// <returns></returns>
         //[HttpPost]
         //public async Task<IActionResult> RemoveJob([FromBody] JobKey job)
@@ -97,7 +96,7 @@ namespace QuartzJobCenter.Web.Controllers
 
         ///// <summary>
         ///// 恢复运行暂停的任务
-        ///// </summary> 
+        ///// </summary>
         ///// <returns></returns>
         //[HttpPost]
         //public async Task<IActionResult> ResumeJob([FromBody] JobKey job)
