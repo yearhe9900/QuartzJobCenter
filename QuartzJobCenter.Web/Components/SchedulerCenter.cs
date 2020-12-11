@@ -192,7 +192,7 @@ namespace QuartzJobCenter.Web.Components
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        private ITrigger CreateTrigger(ScheduleEntity entity)
+        private static ITrigger CreateTrigger(ScheduleEntity entity)
         {
             var trigger = TriggerBuilder.Create().WithIdentity(entity.JobName, entity.JobGroup);
 

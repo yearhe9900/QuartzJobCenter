@@ -17,37 +17,18 @@
       "child": [
         {
           "title": "API任务列表",
-          "href": "ApiTask/Index",
+          "href": "JobTask/Index",
           "icon": "fa fa-table",
           "target": "_self"
         },
         {
           "title": "API日志",
-          "href": "ApiTask/LogView",
-          "icon": "fa fa-list",
-          "target": "_self"
-        }
-      ]
-    },
-    {
-      "title": "GRPC调度",
-      "icon": "fa fa-slideshare",
-      "href": "",
-      "target": "_self",
-      "child": [
-        {
-          "title": "GRPC任务列表",
-          "href": "GrpcTask/Index",
-          "icon": "fa fa-table",
-          "target": "_self"
-        },
-        {
-          "title": "GRPC日志",
-          "href": "GrpcTask/LogView",
+          "href": "JobTask/LogView",
           "icon": "fa fa-list",
           "target": "_self"
         }
       ]
     }
+    
   ]
 }

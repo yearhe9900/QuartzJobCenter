@@ -1,6 +1,6 @@
 ﻿namespace QuartzJobCenter.Models.Response
 {
-    public class TableResultResponse<T> : BaseResultResponse
+    public class ExtendResultResponse<T> : BaseResultResponse
     {
         public int Count { get; set; }
 
