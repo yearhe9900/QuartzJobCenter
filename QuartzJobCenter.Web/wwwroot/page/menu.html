@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,30 +14,30 @@
     </style>
 </head>
 <body>
-    <div class="layuimini-container">
-        <div class="layuimini-main">
-            <blockquote class="layui-elem-quote">
-                Layui的树形表格treeTable，支持异步加载(懒加载)、复选框联动、折叠状态记忆。<br>
-                <a href="https://gitee.com/whvse/treetable-lay" target="_blank" class="layui-btn layui-btn-danger">treetable-lay</a>
-            </blockquote>
-            <div>
-                <div class="layui-btn-group">
-                    <button class="layui-btn" id="btn-expand">全部展开</button>
-                    <button class="layui-btn layui-btn-normal" id="btn-fold">全部折叠</button>
-                </div>
-                <table id="munu-table" class="layui-table" lay-filter="munu-table"></table>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <blockquote class="layui-elem-quote">
+            Layui的树形表格treeTable，支持异步加载(懒加载)、复选框联动、折叠状态记忆。<br>
+            <a href="https://gitee.com/whvse/treetable-lay" target="_blank" class="layui-btn layui-btn-danger">treetable-lay</a>
+        </blockquote>
+        <div>
+            <div class="layui-btn-group">
+                <button class="layui-btn" id="btn-expand">全部展开</button>
+                <button class="layui-btn layui-btn-normal" id="btn-fold">全部折叠</button>
             </div>
+            <table id="munu-table" class="layui-table" lay-filter="munu-table"></table>
         </div>
     </div>
-    <!-- 操作列 -->
-    <script type="text/html" id="auth-state">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    </script>
+</div>
+<!-- 操作列 -->
+<script type="text/html" id="auth-state">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 
-    <script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-    <script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-    <script>
+<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
     layui.use(['table', 'treetable'], function () {
         var $ = layui.jquery;
         var table = layui.table;
@@ -98,6 +98,6 @@
             }
         });
     });
-    </script>
+</script>
 </body>
 </html>

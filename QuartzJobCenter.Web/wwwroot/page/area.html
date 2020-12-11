@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -11,33 +11,33 @@
     <link rel="stylesheet" href="../lib/lay-module/step-lay/step.css" media="all">
 </head>
 <body>
-    <div class="layuimini-container">
-        <div class="layuimini-main">
-            <blockquote class="layui-elem-quote">
-                省市县区三级联动下拉选择器使用开源项目：layarea<br>
-                <a href="https://github.com/fesiong/layarea" target="_blank" class="layui-btn layui-btn-danger">layarea</a>
-            </blockquote>
-            <form class="layui-form" action="" style="padding:20px;">
-                <div class="layui-form-item" id="area-picker">
-                    <div class="layui-form-label">网点地址</div>
-                    <div class="layui-input-inline" style="width: 200px;">
-                        <select name="province" class="province-selector" data-value="广东省" lay-filter="province-1">
-                            <option value="">请选择省</option>
-                        </select>
-                    </div>
-                    <div class="layui-input-inline" style="width: 200px;">
-                        <select name="city" class="city-selector" data-value="深圳市" lay-filter="city-1">
-                            <option value="">请选择市</option>
-                        </select>
-                    </div>
-                    <div class="layui-input-inline" style="width: 200px;">
-                        <select name="county" class="county-selector" data-value="龙岗区" lay-filter="county-1">
-                            <option value="">请选择区</option>
-                        </select>
-                    </div>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <blockquote class="layui-elem-quote">
+            省市县区三级联动下拉选择器使用开源项目：layarea<br>
+            <a href="https://github.com/fesiong/layarea" target="_blank" class="layui-btn layui-btn-danger">layarea</a>
+        </blockquote>
+        <form class="layui-form" action="" style="padding:20px;">
+            <div class="layui-form-item" id="area-picker">
+                <div class="layui-form-label">网点地址</div>
+                <div class="layui-input-inline" style="width: 200px;">
+                    <select name="province" class="province-selector" data-value="广东省" lay-filter="province-1">
+                        <option value="">请选择省</option>
+                    </select>
                 </div>
-            </form>
-            <pre class="layui-code">
+                <div class="layui-input-inline" style="width: 200px;">
+                    <select name="city" class="city-selector" data-value="深圳市" lay-filter="city-1">
+                        <option value="">请选择市</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline" style="width: 200px;">
+                    <select name="county" class="county-selector" data-value="龙岗区" lay-filter="county-1">
+                        <option value="">请选择区</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <pre class="layui-code">
 layui.use(['layer', 'form', 'layarea'], function () {
     var layer = layui.layer
         , form = layui.form
@@ -57,11 +57,11 @@ layui.use(['layer', 'form', 'layarea'], function () {
     });
 });
         </pre>
-        </div>
     </div>
-    <script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-    <script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-    <script>
+</div>
+<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
     layui.use(['layer', 'form', 'layarea'], function () {
         var layer = layui.layer
             , form = layui.form
@@ -80,6 +80,6 @@ layui.use(['layer', 'form', 'layarea'], function () {
             }
         });
     });
-    </script>
+</script>
 </body>
 </html>

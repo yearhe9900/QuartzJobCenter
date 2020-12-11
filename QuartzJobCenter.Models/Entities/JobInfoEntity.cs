@@ -1,5 +1,9 @@
 ﻿using Quartz;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace QuartzJobCenter.Models.Entities
 {
@@ -63,27 +67,21 @@ namespace QuartzJobCenter.Models.Entities
                     case TriggerState.Normal:
                         state = "正常";
                         break;
-
                     case TriggerState.Paused:
                         state = "暂停";
                         break;
-
                     case TriggerState.Complete:
                         state = "完成";
                         break;
-
                     case TriggerState.Error:
                         state = "异常";
                         break;
-
                     case TriggerState.Blocked:
                         state = "阻塞";
                         break;
-
                     case TriggerState.None:
                         state = "不存在";
                         break;
-
                     default:
                         state = "未知";
                         break;

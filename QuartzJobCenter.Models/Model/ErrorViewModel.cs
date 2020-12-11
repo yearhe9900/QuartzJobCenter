@@ -1,3 +1,5 @@
+using System;
+
 namespace QuartzJobCenter.Models.Model
 {
     public class ErrorViewModel

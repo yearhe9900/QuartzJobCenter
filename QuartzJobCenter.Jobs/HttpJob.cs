@@ -8,6 +8,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using static QuartzJobCenter.Common.Define.EnumDefine;
@@ -21,7 +22,7 @@ namespace QuartzJobCenter.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             var maxLogCount = 20;//最多保存日志数量
-            var warnTime = 20;//接口请求超过多少秒记录警告日志
+            var warnTime = 20;//接口请求超过多少秒记录警告日志         
             //获取相关参数
             var requestUrl = context.JobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL);
             requestUrl = requestUrl?.IndexOf("http") == 0 ? requestUrl : "http://" + requestUrl;
@@ -56,7 +57,6 @@ namespace QuartzJobCenter.Jobs
                     case RequestTypeEnum.Get:
                         response = await http.GetAsync(requestUrl, headers);
                         break;
-
                     case RequestTypeEnum.Post:
                         response = await http.PostAsync(requestUrl, requestParameters, headers);
                         break;
@@ -69,8 +69,8 @@ namespace QuartzJobCenter.Jobs
                 }
                 var result = HttpUtility.HtmlEncode(response.Content);
 
-                stopwatch.Stop(); //  停止监视
-                double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数
+                stopwatch.Stop(); //  停止监视            
+                double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数                                
                 loginfo.EndTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                 loginfo.Seconds = seconds;
                 loginfo.Result = result;
@@ -103,7 +103,7 @@ namespace QuartzJobCenter.Jobs
             }
             catch (Exception ex)
             {
-                stopwatch.Stop(); //  停止监视
+                stopwatch.Stop(); //  停止监视            
                 double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数
                 loginfo.ErrorMsg = $"{ex.Message} {ex.StackTrace}";
                 context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = JsonConvert.SerializeObject(loginfo);
@@ -115,7 +115,7 @@ namespace QuartzJobCenter.Jobs
                 logs.Add(JsonConvert.SerializeObject(loginfo));
                 context.JobDetail.JobDataMap[ConstantDefine.LOGLIST] = logs;
                 double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数
-                if (seconds >= warnTime)//如果请求超过20秒，记录警告日志
+                if (seconds >= warnTime)//如果请求超过20秒，记录警告日志    
                 {
                     await WarningAsync(loginfo.JobName, "耗时过长 - " + JsonConvert.SerializeObject(loginfo), mailMessage);
                 }

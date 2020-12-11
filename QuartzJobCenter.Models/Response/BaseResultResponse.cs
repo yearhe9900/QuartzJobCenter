@@ -1,4 +1,7 @@
-﻿using static QuartzJobCenter.Common.Define.EnumDefine;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using static QuartzJobCenter.Common.Define.EnumDefine;
 
 namespace QuartzJobCenter.Models.Response
 {

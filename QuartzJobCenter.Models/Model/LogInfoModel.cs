@@ -1,4 +1,6 @@
-﻿namespace QuartzJobCenter.Models.Model
+﻿using System;
+
+namespace QuartzJobCenter.Models.Model
 {
     public class LogInfoModel
     {
