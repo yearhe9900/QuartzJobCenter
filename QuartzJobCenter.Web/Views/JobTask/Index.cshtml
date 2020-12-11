@@ -47,9 +47,13 @@
             <script type="text/html" id="currentTableBar">
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="log">日志</a>
                 <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
-                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="stop">暂停</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="resume">恢复</a>
+                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="remove">删除</a>
             </script>
-
+            <script type="text/html" id="lastErrMsgBar">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="errMsg">最后异常</a>
+            </script>
         </div>
     </div>
     <script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
@@ -61,7 +65,7 @@
 
         table.render({
             elem: '#currentTableId',
-            url: 'GetAllApiTaskJobs',
+            url: 'GetAllJobs',
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter'],
             cols: [[
@@ -69,13 +73,13 @@
                 { field: 'name',  title: '任务名称'},
                 { field: 'displayState', title: '任务状态'},
                 { field: 'requestUrl', maxWidth: 200, title: '请求地址'},
-                { field: 'lastErrMsg', title: '异常信息', maxWidth: 150},
+                { title: '异常信息', toolbar: '#lastErrMsgBar', align: "center" },
                 { field: 'beginTime', title: '开始时间'},
                 { field: 'previousFireTime', title: '上次执行时间'},
                 { field: 'nextFireTime', title: '下次执行时间'},
                 { field: 'interval', width: 135, title: '执行计划' },
                 { field: 'description', maxWidth: 150, title: '描述' },
-                { title: '操作', toolbar: '#currentTableBar', align: "center"}
+                { title: '操作',minWidth:300,  toolbar: '#currentTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 20,
@@ -146,7 +150,6 @@
                     layer.close(index);
                 });
             } else if (obj.event === 'log') {
-                console.log(data)
                 $.ajax({
                     url: "@Url.Action("GetJobLogs")",
                     data: { name: data.name, groupName: data.groupName },
@@ -159,6 +162,8 @@
                           $.messager.alert('错误', data.msg);
                       }
                   });
+            } else if (obj.event === 'errMsg') {
+                layer.alert(data.lastErrMsg);
             }
         });
 
