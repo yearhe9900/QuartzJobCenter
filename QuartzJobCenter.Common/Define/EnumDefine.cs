@@ -6,6 +6,13 @@ namespace QuartzJobCenter.Common.Define
 {
     public class EnumDefine
     {
+        public enum OperationTypeEnum
+        {
+            StopJob = 0,
+            RemoveJob = 1,
+            ResumeJob = 2
+        }
+
         public enum MailMessageEnum
         {
             None = 0,

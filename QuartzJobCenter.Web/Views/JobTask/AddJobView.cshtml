@@ -113,7 +113,11 @@
                       type: "Post",
                       dataType: "json",
                       success: function (data) {
-                          layer.msg(data.Msg, { icon: 5 });
+                          if (data.code == 0) {
+                              layer.msg(data.msg, { icon: 6 });
+                          } else {
+                              layer.msg(data.msg, { icon: 5 });
+                          }
                       },
                       error: function (data) {
                           $.messager.alert('错误', data.msg);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Quartz;
 using QuartzJobCenter.Models.Entities;
+using QuartzJobCenter.Models.Request;
 using QuartzJobCenter.Models.Response;
 using QuartzJobCenter.Web.Components;
 using System;
@@ -75,34 +76,22 @@ namespace QuartzJobCenter.Web.Controllers
             return new JsonResult(response);
         }
 
-        ///// <summary>
-        ///// 暂停任务
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public async Task<IActionResult> StopJob([FromBody] JobKey job)
-        //{
-        //    return await scheduler.StopOrDelScheduleJobAsync(job.Group, job.Name);
-        //}
-
-        ///// <summary>
-        ///// 删除任务
-        ///// </summary> 
-        ///// <returns></returns>
-        //[HttpPost]
-        //public async Task<IActionResult> RemoveJob([FromBody] JobKey job)
-        //{
-        //    return await scheduler.StopOrDelScheduleJobAsync(job.Group, job.Name, true);
-        //}
-
-        ///// <summary>
-        ///// 恢复运行暂停的任务
-        ///// </summary> 
-        ///// <returns></returns>
-        //[HttpPost]
-        //public async Task<IActionResult> ResumeJob([FromBody] JobKey job)
-        //{
-        //    return await scheduler.ResumeJobAsync(job.Group, job.Name);
-        //}
+        /// <summary>
+        /// 暂停任务、删除任务、恢复运行暂停的任务
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> DoOperationJob(BaseOperationRequest request)
+        {
+            BaseResultResponse response = request.OperationType switch
+            {
+                Common.Define.EnumDefine.OperationTypeEnum.StopJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name),
+                Common.Define.EnumDefine.OperationTypeEnum.RemoveJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name, true),
+                Common.Define.EnumDefine.OperationTypeEnum.ResumeJob => await _schedulerCenter.ResumeJobAsync(request.GroupName, request.Name),
+                _ => new BaseResultResponse(),
+            };
+            return new JsonResult(response);
+        }
     }
 }

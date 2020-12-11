@@ -188,6 +188,77 @@ namespace QuartzJobCenter.Web.Components
         }
 
         /// <summary>
+        /// 暂停/删除 指定的计划
+        /// </summary>
+        /// <param name="jobGroup">任务分组</param>
+        /// <param name="jobName">任务名称</param>
+        /// <param name="isDelete">停止并删除任务</param>
+        /// <returns></returns>
+        public async Task<BaseResultResponse> StopOrDelScheduleJobAsync(string jobGroup, string jobName, bool isDelete = false)
+        {
+            BaseResultResponse response;
+            try
+            {
+                await Scheduler.PauseJob(new JobKey(jobName, jobGroup));
+                if (isDelete)
+                {
+                    await Scheduler.DeleteJob(new JobKey(jobName, jobGroup));
+                    response = new BaseResultResponse
+                    {
+                        Msg = "删除任务计划成功！"
+                    };
+                }
+                else
+                {
+                    response = new BaseResultResponse
+                    {
+                        Msg = "停止任务计划成功！"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new BaseResultResponse
+                {
+                    Code = (int)ResponseCodeEnum.Error,
+                    Msg = "停止任务计划失败" + ex.Message
+                };
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 恢复运行暂停的任务
+        /// </summary>
+        /// <param name="jobName">任务名称</param>
+        /// <param name="jobGroup">任务分组</param>
+        public async Task<BaseResultResponse> ResumeJobAsync(string jobGroup, string jobName)
+        {
+            var response = new BaseResultResponse();
+            try
+            {
+                //检查任务是否存在
+                var jobKey = new JobKey(jobName, jobGroup);
+                if (await Scheduler.CheckExists(jobKey))
+                {
+                    await Scheduler.ResumeJob(jobKey);
+                    response.Msg = "恢复任务计划成功！";
+                }
+                else
+                {
+                    response.Code = (int)ResponseCodeEnum.Fail;
+                    response.Msg = "任务不存在";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Msg = $"恢复任务计划失败！ex:{ex}";
+                response.Code = (int)ResponseCodeEnum.Error;
+            }
+            return response;
+        }
+
+        /// <summary>
         /// 创建类型Cron的触发器
         /// </summary>
         /// <param name="entity"></param>

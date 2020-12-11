@@ -130,7 +130,6 @@
         table.on('tool(currentTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
-
                 var index = layer.open({
                     title: '编辑用户',
                     type: 2,
@@ -144,9 +143,28 @@
                     layer.full(index);
                 });
                 return false;
-            } else if (obj.event === 'delete') {
-                layer.confirm('真的删除行么', function (index) {
-                    obj.del();
+            } else if (obj.event === 'remove') {
+                layer.confirm('真的移除该任务吗', function (index) {
+                    console.log(data)
+                    $.ajax({
+                        url: "@Url.Action("DoOperationJob")",
+                        data: { name: data.name, groupName: data.groupName, operationType:1 },
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 0) {
+                                obj.del();
+                                layer.msg(data.msg, { icon: 6 });
+                            }
+                            else {
+                                layer.msg(data.msg, { icon: 5 });
+                            }
+                        },
+                      error: function (data) {
+                          $.messager.alert('错误', data.msg);
+                      }
+                  });
+
                     layer.close(index);
                 });
             } else if (obj.event === 'log') {
@@ -156,7 +174,7 @@
                       type: "Get",
                       dataType: "json",
                       success: function (data) {
-                          layer.msg(data.Msg, { icon: 5 });
+                          layer.msg(data.msg, { icon: 5 });
                       },
                       error: function (data) {
                           $.messager.alert('错误', data.msg);
