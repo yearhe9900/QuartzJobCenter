@@ -188,6 +188,39 @@ namespace QuartzJobCenter.Web.Components
         }
 
         /// <summary>
+        /// 查询任务
+        /// </summary>
+        /// <param name="jobGroup"></param>
+        /// <param name="jobName"></param>
+        /// <returns></returns>
+        public async Task<ScheduleEntity> QueryJobAsync(string jobGroup, string jobName)
+        {
+            var jobKey = new JobKey(jobName, jobGroup);
+            var jobDetail = await Scheduler.GetJobDetail(jobKey);
+            var triggersList = await Scheduler.GetTriggersOfJob(jobKey);
+            var triggers = triggersList.AsEnumerable().FirstOrDefault();
+            var intervalSeconds = (triggers as SimpleTriggerImpl)?.RepeatInterval.TotalSeconds;
+            var entity = new ScheduleEntity
+            {
+                RequestUrl = jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL),
+                BeginTime = triggers.StartTimeUtc.LocalDateTime,
+                EndTime = triggers.EndTimeUtc?.LocalDateTime,
+                IntervalSecond = intervalSeconds.HasValue ? Convert.ToInt32(intervalSeconds.Value) : 0,
+                JobGroup = jobGroup,
+                JobName = jobName,
+                Cron = (triggers as CronTriggerImpl)?.CronExpressionString,
+                RunTimes = (triggers as SimpleTriggerImpl)?.RepeatCount,
+                TriggerType = triggers is SimpleTriggerImpl ? TriggerTypeEnum.Simple : TriggerTypeEnum.Cron,
+                RequestType = (RequestTypeEnum)int.Parse(jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTTYPE)),
+                RequestParameters = jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTPARAMETERS),
+                Headers = jobDetail.JobDataMap.GetString(ConstantDefine.HEADERS),
+                MailMessage = (MailMessageEnum)int.Parse(jobDetail.JobDataMap.GetString(ConstantDefine.MAILMESSAGE) ?? "0"),
+                Description = jobDetail.Description
+            };
+            return entity;
+        }
+
+        /// <summary>
         /// 暂停/删除 指定的计划
         /// </summary>
         /// <param name="jobGroup">任务分组</param>
@@ -279,7 +312,7 @@ namespace QuartzJobCenter.Web.Components
 
             if (entity.TriggerType == TriggerTypeEnum.Cron)
             {
-                trigger.WithCronSchedule(entity.Cron, cronScheduleBuilder => cronScheduleBuilder.WithMisfireHandlingInstructionFireAndProceed());//指定cron表达式
+                trigger.WithCronSchedule(entity.Cron, cronScheduleBuilder => cronScheduleBuilder.WithMisfireHandlingInstructionDoNothing());//指定cron表达式
             }
             else
             {
@@ -302,9 +335,9 @@ namespace QuartzJobCenter.Web.Components
                     });
                 }
             }
-
-            return trigger.ForJob(entity.JobName, entity.JobGroup)//作业名称
+            var build = trigger.ForJob(entity.JobName, entity.JobGroup)//作业名称
                 .Build();
+            return build;
         }
     }
 }

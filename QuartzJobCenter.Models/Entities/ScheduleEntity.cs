@@ -6,6 +6,21 @@ namespace QuartzJobCenter.Models.Entities
     public class ScheduleEntity
     {
         /// <summary>
+        /// 是否编辑
+        /// </summary>
+        public string IsEdit { get; set; }
+
+        /// <summary>
+        /// 任务分组(编辑用)
+        /// </summary>
+        public string OldGroupName { get; set; }
+
+        /// <summary>
+        /// 任务名称(编辑用)
+        /// </summary>
+        public string OldName { get; set; }
+
+        /// <summary>
         /// 任务名称
         /// </summary>
         public string JobName { get; set; }
@@ -18,12 +33,12 @@ namespace QuartzJobCenter.Models.Entities
         /// <summary>
         /// 开始时间
         /// </summary>
-        public DateTimeOffset? BeginTime { get; set; }
+        public DateTime? BeginTime { get; set; }
 
         /// <summary>
         /// 结束时间
         /// </summary>
-        public DateTimeOffset? EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         /// <summary>
         /// Cron表达式

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model QuartzJobCenter.Models.Entities.ScheduleEntity
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -18,7 +19,10 @@
     </style>
 </head>
 <body>
-    <div class="layui-form layuimini-form">
+    <form class="layui-form layuimini-form" lay-filter="jobTaskForm">
+        <input type="text" name="IsEdit" value="0" class="layui-hide">
+        <input type="text" name="OldGroupName" value="0" class="layui-hide">
+        <input type="text" name="OldName" value="0" class="layui-hide">
         <div class="layui-form-item">
             <label class="layui-form-label required">任务组名</label>
             <div class="layui-input-block">
@@ -42,20 +46,20 @@
             <div class="layui-input-block">
                 <input type="radio" name="RequestType" value="1" title="GET" checked="">
                 <input type="radio" name="RequestType" value="2" title="POST">
-                <input type="radio" name="RequestType" value="3" title="PUT">
-                <input type="radio" name="RequestType" value="4" title="DELETE">
+                @*<input type="radio" name="RequestType" value="3" title="PUT">
+                <input type="radio" name="RequestType" value="4" title="DELETE">*@
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label required">开始时间</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" lay-verify="required" id="BeginTime" placeholder="请选择任务开始时间">
+                <input type="text" class="layui-input" lay-verify="required" name="BeginTime" id="BeginTime" placeholder="请选择任务开始时间">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">结束时间</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" id="EndTime" placeholder="请选择任务结束时间">
+                <input type="text" class="layui-input" name="EndTime" id="EndTime" placeholder="请选择任务结束时间">
             </div>
         </div>
         <div class="layui-form-item">
@@ -87,7 +91,7 @@
                 <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
             </div>
         </div>
-    </div>
+    </form>
     <script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
     <script>
         layui.use(['form', 'laydate'], function () {
@@ -105,24 +109,52 @@
                 , type: 'datetime'
             });
 
+            @if (Model != null)
+            {
+                var requestType = 0;
+                switch (Model.RequestType)
+                {
+                    case QuartzJobCenter.Common.Define.EnumDefine.RequestTypeEnum.Get:requestType = 0;break;
+                    case QuartzJobCenter.Common.Define.EnumDefine.RequestTypeEnum.Post: requestType = 1; break;
+                    default:requestType = 0;break;
+                }
+                var beginTime = Html.Raw(Model.BeginTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+                var endTime = Html.Raw(Model.EndTime.HasValue?Model.EndTime.Value.ToString("yyyy-MM-dd HH:mm:ss") :"");
+                <text>  form.val('jobTaskForm', {
+                "IsEdit": "1"
+                , "OldGroupName": '@Html.Raw(Model.JobGroup)'
+                , "OldName": '@Html.Raw(Model.JobName)'
+                , "JobGroup": '@Html.Raw(Model.JobGroup)'
+                , "JobName": '@Html.Raw(Model.JobName)'
+                , "RequestUrl": '@Html.Raw(Model.RequestUrl)'
+                , "RequestType":@requestType
+                , "BeginTime": '@beginTime'
+                , "EndTime": '@endTime'
+                , "Cron": '@Html.Raw(Model.Cron)'
+                , "Headers": '@Html.Raw(Model.Headers)'
+                , "RequestParameters": '@Html.Raw(Model.RequestParameters)'
+                , "Description": '@Html.Raw(Model.Description)'
+                });</text>
+            }
+
             //监听提交
             form.on('submit(saveBtn)', function (data) {
                   $.ajax({
-                      url: "@Url.Action("AddJob")",
+                url: "@Url.Action("AddOrEditJob")",
                       data: data.field,
                       type: "Post",
                       dataType: "json",
                       success: function (data) {
-                          if (data.code == 0) {
-                              layer.msg(data.msg, { icon: 6 });
-                          } else {
-                              layer.msg(data.msg, { icon: 5 });
-                          }
-                      },
+                        if (data.code == 0) {
+                            layer.msg(data.msg, { icon: 6 });
+                        } else {
+                            layer.msg(data.msg, { icon: 5 });
+                        }
+                    },
                       error: function (data) {
                           $.messager.alert('错误', data.msg);
-                      }
-                  });
+                    }
+                });
                 return false;
             });
 

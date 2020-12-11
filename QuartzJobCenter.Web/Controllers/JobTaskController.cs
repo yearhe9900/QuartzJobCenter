@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static QuartzJobCenter.Common.Define.EnumDefine;
 
 namespace QuartzJobCenter.Web.Controllers
 {
@@ -29,9 +30,14 @@ namespace QuartzJobCenter.Web.Controllers
             return View();
         }
 
-        public IActionResult AddJobView()
+        public async Task<IActionResult> AddOrEditJobViewAsync(string name, string groupName)
         {
-            return View();
+            if (!string.IsNullOrWhiteSpace(name) & !string.IsNullOrWhiteSpace(groupName))
+            {
+                var queryJobInfo = await _schedulerCenter.QueryJobAsync(groupName, name);
+                return View(queryJobInfo);
+            }
+            return View(null);
         }
 
         [HttpGet]
@@ -52,9 +58,33 @@ namespace QuartzJobCenter.Web.Controllers
         /// <param name="entity"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> AddJob(ScheduleEntity entity)
+        public async Task<IActionResult> AddOrEditJob(ScheduleEntity entity)
         {
-            var response = await _schedulerCenter.AddScheduleJobAsync(entity);
+            BaseResultResponse response;
+            switch (entity.IsEdit)
+            {
+                case "0": response = await _schedulerCenter.AddScheduleJobAsync(entity); break;
+                case "1":
+                    var stopResult = await _schedulerCenter.StopOrDelScheduleJobAsync(entity.OldGroupName, entity.OldName, true);
+                    if (stopResult.Code == (int)ResponseCodeEnum.Success)
+                    {
+                        var addResult = await _schedulerCenter.AddScheduleJobAsync(entity);
+                        if (addResult.Code == (int)ResponseCodeEnum.Success)
+                        {
+                            response = new BaseResultResponse() { Msg = "重新添加计划成功" };
+                        }
+                        else
+                        {
+                            response = addResult;
+                        }
+                    }
+                    else
+                    {
+                        response = stopResult;
+                    }
+                    ; break;
+                default: response = new BaseResultResponse() { Code = (int)ResponseCodeEnum.Fail, Msg = "编辑计划失败" }; break;
+            }
             return new JsonResult(response);
         }
 
@@ -84,12 +114,12 @@ namespace QuartzJobCenter.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DoOperationJob(BaseOperationRequest request)
         {
-            BaseResultResponse response = request.OperationType switch
+            var response = request.OperationType switch
             {
-                Common.Define.EnumDefine.OperationTypeEnum.StopJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name),
-                Common.Define.EnumDefine.OperationTypeEnum.RemoveJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name, true),
-                Common.Define.EnumDefine.OperationTypeEnum.ResumeJob => await _schedulerCenter.ResumeJobAsync(request.GroupName, request.Name),
-                _ => new BaseResultResponse(),
+                OperationTypeEnum.StopJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name),
+                OperationTypeEnum.RemoveJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name, true),
+                OperationTypeEnum.ResumeJob => await _schedulerCenter.ResumeJobAsync(request.GroupName, request.Name),
+                _ => new BaseResultResponse() { Code = (int)ResponseCodeEnum.Fail, Msg = "修改计划失败" },
             };
             return new JsonResult(response);
         }
