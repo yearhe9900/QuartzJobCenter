@@ -23,9 +23,15 @@
                     <form class="layui-form layui-form-pane" action="">
                         <div class="layui-form-item">
                             <div class="layui-inline">
+                                <label class="layui-form-label">任务组名</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="JobGroup" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
                                 <label class="layui-form-label">任务名称</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="username" autocomplete="off" class="layui-input">
+                                    <input type="text" name="JobName" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-inline">
@@ -102,13 +108,15 @@
 
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
+            var result = data.field;
             //执行搜索重载
             table.reload('currentTableId', {
                 page: {
                     curr: 1
                 }
                 , where: {
-                    searchParams: result
+                    JobGroup: result.JobGroup,
+                    JobName: result.JobName
                 }
             }, 'data');
 

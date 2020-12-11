@@ -15,6 +15,7 @@ using Quartz.Simpl;
 using Quartz.Impl.AdoJobStore;
 using Quartz.Impl;
 using Quartz.Impl.AdoJobStore.Common;
+using QuartzJobCenter.Models.Request;
 
 namespace QuartzJobCenter.Web.Components
 {
@@ -144,19 +145,29 @@ namespace QuartzJobCenter.Web.Components
         /// 获取所有Job（详情信息 - 初始化页面调用）
         /// </summary>
         /// <returns></returns>
-        public async Task<List<JobInfoEntity>> GetAllJobAsync()
+        public async Task<(List<JobInfoEntity>, int totalCount)> GetAllJobAsync(GetAllJobsRequest request)
         {
-            List<JobKey> jboKeyList = new List<JobKey>();
+            List<JobKey> jobKeyList = new List<JobKey>();
             List<JobInfoEntity> jobInfoList = new List<JobInfoEntity>();
+            var tatolCount = 0;
             if (Scheduler != null)
             {
                 var groupNames = await Scheduler.GetJobGroupNames();
+                if (!string.IsNullOrWhiteSpace(request.JobGroup))
+                {
+                    groupNames = groupNames.Where(o => o.Contains(request.JobGroup)).ToList();
+                }
                 foreach (var groupName in groupNames.OrderBy(t => t))
                 {
-                    jboKeyList.AddRange(await Scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(groupName)));
-
+                    jobKeyList.AddRange(await Scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(groupName)));
                 }
-                foreach (var jobKey in jboKeyList.OrderBy(t => t.Name))
+                if (!string.IsNullOrWhiteSpace(request.JobName))
+                {
+                    jobKeyList = jobKeyList.Where(o => o.Name.Contains(request.JobName)).ToList();
+                }
+                tatolCount = jobKeyList.Count();
+                jobKeyList = jobKeyList.Skip((request.Page - 1) * request.limit).Take(request.limit).ToList();
+                foreach (var jobKey in jobKeyList.OrderBy(t => t.Name))
                 {
                     var jobDetail = await Scheduler.GetJobDetail(jobKey);
                     var triggersList = await Scheduler.GetTriggersOfJob(jobKey);
@@ -184,7 +195,7 @@ namespace QuartzJobCenter.Web.Components
                     });
                 }
             }
-            return jobInfoList;
+            return (jobInfoList, tatolCount);
         }
 
         /// <summary>

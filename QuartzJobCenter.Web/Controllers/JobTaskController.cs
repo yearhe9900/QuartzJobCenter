@@ -41,12 +41,12 @@ namespace QuartzJobCenter.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllJobs()
+        public async Task<IActionResult> GetAllJobs(GetAllJobsRequest request)
         {
-            var allJobs = await _schedulerCenter.GetAllJobAsync();
+            var (allJobs, totalCount) = await _schedulerCenter.GetAllJobAsync(request);
             var response = new ExtendResultResponse<List<JobInfoEntity>>()
             {
-                Count = allJobs.Count,
+                Count = totalCount,
                 Data = allJobs
             };
             return new JsonResult(response);
