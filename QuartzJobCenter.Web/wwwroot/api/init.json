@@ -10,7 +10,7 @@
   },
   "menuInfo": [
     {
-      "title": "API调度",
+      "title": "调度任务",
       "icon": "fa fa-slideshare",
       "href": "",
       "target": "_self",
@@ -22,7 +22,7 @@
           "target": "_self"
         },
         {
-          "title": "API日志",
+          "title": "GPRC任务列表",
           "href": "JobTask/LogView",
           "icon": "fa fa-list",
           "target": "_self"

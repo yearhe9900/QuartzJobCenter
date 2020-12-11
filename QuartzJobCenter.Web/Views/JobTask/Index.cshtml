@@ -47,12 +47,26 @@
             <script type="text/html" id="currentTableBar">
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="log">日志</a>
                 <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+                {{# if (d.triggerState=== 0||d.triggerState=== 3||d.triggerState=== 4) { }}
                 <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="stop">暂停</a>
+                {{# } else if (d.triggerState=== 1) { }}
                 <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="resume">恢复</a>
+                {{# } }}
                 <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="remove">删除</a>
             </script>
             <script type="text/html" id="lastErrMsgBar">
+                {{# if (d.lastErrMsg) { }}
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="errMsg">最后异常</a>
+                {{# } else { }}
+                <span>无</span>
+                {{# } }}
+            </script>
+            <script type="text/html" id="descriptionBar">
+                {{# if (d.description) { }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="description">描述详情</a>
+                {{# } else { }}
+                <span>无</span>
+                {{# } }}
             </script>
         </div>
     </div>
@@ -78,13 +92,12 @@
                 { field: 'previousFireTime', title: '上次执行时间'},
                 { field: 'nextFireTime', title: '下次执行时间'},
                 { field: 'interval', width: 135, title: '执行计划' },
-                { field: 'description', maxWidth: 150, title: '描述' },
-                { title: '操作',minWidth:300,  toolbar: '#currentTableBar', align: "center"}
+                { title: '描述', maxWidth: 80, toolbar: '#descriptionBar', align: "center" },
+                { title: '操作',minWidth:250,  toolbar: '#currentTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 20,
-            page: true,
-            skin: 'line'
+            page: true
         });
 
         // 监听搜索操作
@@ -122,11 +135,6 @@
             }
         });
 
-        //监听表格复选框选择
-        table.on('checkbox(currentTableFilter)', function (obj) {
-            console.log(obj)
-        });
-
         table.on('tool(currentTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
@@ -143,6 +151,52 @@
                     layer.full(index);
                 });
                 return false;
+            } else if (obj.event === 'stop') {
+                layer.confirm('真的暂停该任务吗', function (index) {
+                    console.log(data)
+                    $.ajax({
+                        url: "@Url.Action("DoOperationJob")",
+                        data: { name: data.name, groupName: data.groupName, operationType:0 },
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 0) {
+                                table.reload('currentTableId');
+                                layer.msg(data.msg, { icon: 6 });
+                            }
+                            else {
+                                layer.msg(data.msg, { icon: 5 });
+                            }
+                        },
+                      error: function (data) {
+                          $.messager.alert('错误', data.msg);
+                      }
+                  });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'resume') {
+                layer.confirm('真的恢复该任务吗', function (index) {
+                    console.log(data)
+                    $.ajax({
+                        url: "@Url.Action("DoOperationJob")",
+                        data: { name: data.name, groupName: data.groupName, operationType:2 },
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 0) {
+                                table.reload('currentTableId');
+                                layer.msg(data.msg, { icon: 6 });
+                            }
+                            else {
+                                layer.msg(data.msg, { icon: 5 });
+                            }
+                        },
+                      error: function (data) {
+                          $.messager.alert('错误', data.msg);
+                      }
+                  });
+                    layer.close(index);
+                });
             } else if (obj.event === 'remove') {
                 layer.confirm('真的移除该任务吗', function (index) {
                     console.log(data)
@@ -164,7 +218,6 @@
                           $.messager.alert('错误', data.msg);
                       }
                   });
-
                     layer.close(index);
                 });
             } else if (obj.event === 'log') {
@@ -181,7 +234,19 @@
                       }
                   });
             } else if (obj.event === 'errMsg') {
-                layer.alert(data.lastErrMsg);
+                if (data.lastErrMsg) {
+                    layer.alert(data.lastErrMsg);
+                }
+                else {
+                    layer.alert("无");
+                }
+            } else if (obj.event === 'description') {
+                if (data.description) {
+                    layer.alert(data.description);
+                }
+                else {
+                    layer.alert("无");
+                }
             }
         });
 
