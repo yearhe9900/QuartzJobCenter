@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Quartz;
 using QuartzJobCenter.Models.Entities;
+using QuartzJobCenter.Models.Model;
 using QuartzJobCenter.Models.Request;
 using QuartzJobCenter.Models.Response;
 using QuartzJobCenter.Web.Components;
@@ -14,7 +15,7 @@ namespace QuartzJobCenter.Web.Controllers
 {
     public class JobTaskController : Controller
     {
-        private SchedulerCenter _schedulerCenter;
+        private readonly SchedulerCenter _schedulerCenter;
 
         public JobTaskController(SchedulerCenter schedulerCenter)
         {
@@ -98,12 +99,12 @@ namespace QuartzJobCenter.Web.Controllers
         public async Task<IActionResult> GetJobLogs(string name, string groupName)
         {
             var jobLogs = await _schedulerCenter.GetJobLogsAsync(new JobKey(name, groupName));
-            var response = new ExtendResultResponse<List<string>>()
+            List<LogInfoModel> logInfoModels = new List<LogInfoModel>();
+            foreach (var log in jobLogs)
             {
-                Count = jobLogs.Count,
-                Data = jobLogs
-            };
-            return new JsonResult(response);
+                logInfoModels.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<LogInfoModel>(log));
+            }
+            return View(logInfoModels);
         }
 
         /// <summary>
