@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "QuartzJobCenter.GrpcService";
+
+package jobTask;
+
+service JobTask {
+  rpc Excute (ExcuteRequest) returns (ExcuteReply);
+}
+
+message ExcuteRequest {
+  string params = 1;
+}
+
+message ExcuteReply {
+  string message = 1;
+  Stauts status = 2;
+}
+
+enum Stauts{
+	SUCCESS = 0;
+	FAILR = 1;
+	ERROR =2;
+}

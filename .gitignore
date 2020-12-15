@@ -13,3 +13,5 @@
 /QuartzJobCenter.Jobs/obj/
 /QuartzJobCenter.Test/bin/
 /QuartzJobCenter.Test/obj/
+/QuartzJobCenter.GrpcService/obj
+/QuartzJobCenter.GrpcService/bin/Debug/net5.0
