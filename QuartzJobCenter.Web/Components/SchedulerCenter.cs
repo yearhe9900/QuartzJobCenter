@@ -16,6 +16,7 @@ using Quartz.Impl.AdoJobStore;
 using Quartz.Impl;
 using Quartz.Impl.AdoJobStore.Common;
 using QuartzJobCenter.Models.Request;
+using QuartzJobCenter.Service.Abstracts;
 
 namespace QuartzJobCenter.Web.Components
 {
@@ -23,6 +24,7 @@ namespace QuartzJobCenter.Web.Components
     {
         private IScheduler _scheduler;
         private IDbProvider _dbProvider;
+        private readonly ITaskService _taskService;
         private string _driverDelegateType;
 
         /// <summary>

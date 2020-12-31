@@ -10,6 +10,7 @@ using QuartzJobCenter.Common.Define;
 using QuartzJobCenter.Common.Enums;
 using QuartzJobCenter.Models.Options;
 using QuartzJobCenter.Web.Components;
+using QuartzJobCenter.Web.ConfigureServicesExtensions;
 using System;
 using System.Collections.Generic;
 
@@ -55,6 +56,7 @@ namespace QuartzJobCenter.Web
 
             services.AddControllersWithViews();
             services.AddSingleton(GetScheduler());
+            services.AddSingletonSetting();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
