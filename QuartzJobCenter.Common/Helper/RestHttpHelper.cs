@@ -104,8 +104,7 @@ namespace QuartzJobCenter.Common.Helper
         }
 
         #endregion
-
-
+ 
         #region 私有方法 
 
         /// <summary>

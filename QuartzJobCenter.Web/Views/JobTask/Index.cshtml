@@ -116,7 +116,8 @@
                 }
                 , where: {
                     JobGroup: result.JobGroup,
-                    JobName: result.JobName
+                    JobName: result.JobName,
+                    SchedulerName:'httpScheduler'
                 }
             }, 'data');
 

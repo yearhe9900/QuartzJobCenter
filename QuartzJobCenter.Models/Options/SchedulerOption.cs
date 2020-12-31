@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuartzJobCenter.Models.Request
+namespace QuartzJobCenter.Models.Options
 {
-    public class GetAllJobsRequest : BasePageRequest
+    public class SchedulerOption
     {
-        public string JobGroup { get; set; }
-
-        public string JobName { get; set; }
+        public int ScheduleTypeId { get; set; }
 
         public string SchedulerName { get; set; }
     }

@@ -1,0 +1,219 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Repository\\QuartzJobCenter.Repository.csproj": {}
+  },
+  "projects": {
+    "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj",
+        "projectName": "QuartzJobCenter.Common",
+        "projectPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj",
+        "packagesPath": "C:\\Users\\Wei\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Wei\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.0.78, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[2.10.0, )"
+            },
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            },
+            "RestSharp": {
+              "target": "Package",
+              "version": "[106.11.7, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Models\\QuartzJobCenter.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Models\\QuartzJobCenter.Models.csproj",
+        "projectName": "QuartzJobCenter.Models",
+        "projectPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Models\\QuartzJobCenter.Models.csproj",
+        "packagesPath": "C:\\Users\\Wei\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Wei\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj": {
+                "projectPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Quartz": {
+              "target": "Package",
+              "version": "[3.2.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Repository\\QuartzJobCenter.Repository.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Repository\\QuartzJobCenter.Repository.csproj",
+        "projectName": "QuartzJobCenter.Repository",
+        "projectPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Repository\\QuartzJobCenter.Repository.csproj",
+        "packagesPath": "C:\\Users\\Wei\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Repository\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Wei\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj": {
+                "projectPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj"
+              },
+              "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Models\\QuartzJobCenter.Models.csproj": {
+                "projectPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Models\\QuartzJobCenter.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.0.78, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

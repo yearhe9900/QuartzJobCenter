@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Quartz;
 using QuartzJobCenter.Models.Entities;
 using QuartzJobCenter.Models.Model;
+using QuartzJobCenter.Models.Options;
 using QuartzJobCenter.Models.Request;
 using QuartzJobCenter.Models.Response;
 using QuartzJobCenter.Web.Components;
@@ -16,10 +18,12 @@ namespace QuartzJobCenter.Web.Controllers
     public class JobTaskController : Controller
     {
         private readonly SchedulerCenter _schedulerCenter;
+        public readonly List<SchedulerOption> _schedulerOptions;
 
-        public JobTaskController(SchedulerCenter schedulerCenter)
+        public JobTaskController(SchedulerCenter schedulerCenter, IOptions<List<SchedulerOption>> schedulerOptions)
         {
             _schedulerCenter = schedulerCenter;
+            _schedulerOptions = schedulerOptions.Value;
         }
 
         public IActionResult Index()
@@ -31,11 +35,12 @@ namespace QuartzJobCenter.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AddOrEditJobViewAsync(string name, string groupName)
+        public async Task<IActionResult> AddOrEditJobViewAsync(string name, string groupName, int schedulerType)
         {
+            var schedulerName = _schedulerOptions.Where(o => o.ScheduleTypeId == schedulerType).FirstOrDefault().SchedulerName;
             if (!string.IsNullOrWhiteSpace(name) & !string.IsNullOrWhiteSpace(groupName))
             {
-                var queryJobInfo = await _schedulerCenter.QueryJobAsync(groupName, name);
+                var queryJobInfo = await _schedulerCenter.QueryJobAsync(groupName, name, schedulerName);
                 return View(queryJobInfo);
             }
             return View(null);
@@ -66,7 +71,7 @@ namespace QuartzJobCenter.Web.Controllers
             {
                 case "0": response = await _schedulerCenter.AddScheduleJobAsync(entity); break;
                 case "1":
-                    var stopResult = await _schedulerCenter.StopOrDelScheduleJobAsync(entity.OldGroupName, entity.OldName, true);
+                    var stopResult = await _schedulerCenter.StopOrDelScheduleJobAsync(entity.OldGroupName, entity.OldName, entity.SchedulerName, true);
                     if (stopResult.Code == (int)ResponseCodeEnum.Success)
                     {
                         var addResult = await _schedulerCenter.AddScheduleJobAsync(entity);
@@ -96,9 +101,10 @@ namespace QuartzJobCenter.Web.Controllers
         /// <param name="group"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetJobLogs(string name, string groupName)
+        public async Task<IActionResult> GetJobLogs(string name, string groupName, int schedulerType)
         {
-            var jobLogs = await _schedulerCenter.GetJobLogsAsync(new JobKey(name, groupName));
+            var schedulerName = _schedulerOptions.Where(o => o.ScheduleTypeId == schedulerType).FirstOrDefault().SchedulerName;
+            var jobLogs = await _schedulerCenter.GetJobLogsAsync(new JobKey(name, groupName), schedulerName);
             List<LogInfoModel> logInfoModels = new List<LogInfoModel>();
             foreach (var log in jobLogs)
             {
@@ -115,11 +121,12 @@ namespace QuartzJobCenter.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DoOperationJob(BaseOperationRequest request)
         {
+            var schedulerName = _schedulerOptions.Where(o => o.ScheduleTypeId == (int)request.SchedulerType).FirstOrDefault().SchedulerName;
             var response = request.OperationType switch
             {
-                OperationTypeEnum.StopJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name),
-                OperationTypeEnum.RemoveJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name, true),
-                OperationTypeEnum.ResumeJob => await _schedulerCenter.ResumeJobAsync(request.GroupName, request.Name),
+                OperationTypeEnum.StopJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name, schedulerName),
+                OperationTypeEnum.RemoveJob => await _schedulerCenter.StopOrDelScheduleJobAsync(request.GroupName, request.Name, schedulerName, true),
+                OperationTypeEnum.ResumeJob => await _schedulerCenter.ResumeJobAsync(request.GroupName, request.Name, schedulerName),
                 _ => new BaseResultResponse() { Code = (int)ResponseCodeEnum.Fail, Msg = "修改计划失败" },
             };
             return new JsonResult(response);

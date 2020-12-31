@@ -14,5 +14,7 @@ namespace QuartzJobCenter.Models.Request
         public string GroupName { get; set; }
 
         public string Name { get; set; }
+
+        public ScheduleTypeEnum SchedulerType { get; set; }
     }
 }

@@ -43,48 +43,45 @@ namespace QuartzJobCenter.Web.Components
             _dbProvider = dbProvider;
         }
 
-        private IScheduler Scheduler
+        private IScheduler GetScheduler(string schedulerName = "httpScheduler")
         {
-            get
+            if (_scheduler != null)
             {
-                if (_scheduler != null)
-                {
-                    return _scheduler;
-                }
-
-                if (_dbProvider == null || string.IsNullOrEmpty(_driverDelegateType))
-                {
-                    throw new Exception("dbProvider or driverDelegateType is null");
-                }
-
-                DBConnectionManager.Instance.AddConnectionProvider("default", _dbProvider);
-                var serializer = new JsonObjectSerializer();
-                serializer.Initialize();
-                var jobStore = new JobStoreTX
-                {
-                    DataSource = "default",
-                    TablePrefix = "QRTZ_",
-                    InstanceId = "AUTO",
-                    DriverDelegateType = _driverDelegateType,
-                    ObjectSerializer = serializer,
-                };
-                var schedulerName = "hzpScheduler";
-                DirectSchedulerFactory.Instance.CreateScheduler(schedulerName, "AUTO", new DefaultThreadPool(), jobStore);
-                _scheduler = SchedulerRepository.Instance.Lookup(schedulerName).Result;
-
-                _scheduler.Start();//默认开始调度器
                 return _scheduler;
             }
+
+            if (_dbProvider == null || string.IsNullOrEmpty(_driverDelegateType))
+            {
+                throw new Exception("dbProvider or driverDelegateType is null");
+            }
+
+            DBConnectionManager.Instance.AddConnectionProvider("default", _dbProvider);
+            var serializer = new JsonObjectSerializer();
+            serializer.Initialize();
+            var jobStore = new JobStoreTX
+            {
+                DataSource = "default",
+                TablePrefix = "QRTZ_",
+                InstanceId = "AUTO",
+                DriverDelegateType = _driverDelegateType,
+                ObjectSerializer = serializer,
+            };
+            DirectSchedulerFactory.Instance.CreateScheduler(schedulerName, "AUTO", new DefaultThreadPool(), jobStore);
+            _scheduler = SchedulerRepository.Instance.Lookup(schedulerName).Result;
+
+            _scheduler.Start();//默认开始调度器
+            return _scheduler;
         }
 
         /// <summary>
         /// 获取job日志
         /// </summary>
         /// <param name="jobKey"></param>
+        /// <param name="schedulerName"></param>
         /// <returns></returns>
-        public async Task<List<string>> GetJobLogsAsync(JobKey jobKey)
+        public async Task<List<string>> GetJobLogsAsync(JobKey jobKey, string schedulerName)
         {
-            var jobDetail = await Scheduler.GetJobDetail(jobKey);
+            var jobDetail = await GetScheduler(schedulerName).GetJobDetail(jobKey);
             return jobDetail.JobDataMap[ConstantDefine.LOGLIST] as List<string>;
         }
 
@@ -100,7 +97,7 @@ namespace QuartzJobCenter.Web.Components
             {
                 //检查任务是否已存在
                 var jobKey = new JobKey(entity.JobName, entity.JobGroup);
-                if (await Scheduler.CheckExists(jobKey))
+                if (await GetScheduler(entity.SchedulerName).CheckExists(jobKey))
                 {
                     result.Code = (int)ResponseCodeEnum.Error;
                     result.Msg = "任务已存在";
@@ -129,7 +126,7 @@ namespace QuartzJobCenter.Web.Components
                     trigger = CreateTrigger(entity);
 
                     // 告诉Quartz使用我们的触发器来安排作业
-                    await Scheduler.ScheduleJob(job, trigger);
+                    await GetScheduler(entity.SchedulerName).ScheduleJob(job, trigger);
                     result.Code = (int)ResponseCodeEnum.Success;
                 }
             }
@@ -150,27 +147,29 @@ namespace QuartzJobCenter.Web.Components
             List<JobKey> jobKeyList = new List<JobKey>();
             List<JobInfoEntity> jobInfoList = new List<JobInfoEntity>();
             var tatolCount = 0;
-            if (Scheduler != null)
+            var scheduler = GetScheduler(request.SchedulerName);
+            if (scheduler != null)
             {
-                var groupNames = await Scheduler.GetJobGroupNames();
-                if (!string.IsNullOrWhiteSpace(request.JobGroup))
-                {
-                    groupNames = groupNames.Where(o => o.Contains(request.JobGroup)).ToList();
-                }
-                foreach (var groupName in groupNames.OrderBy(t => t))
-                {
-                    jobKeyList.AddRange(await Scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(groupName)));
-                }
-                if (!string.IsNullOrWhiteSpace(request.JobName))
-                {
-                    jobKeyList = jobKeyList.Where(o => o.Name.Contains(request.JobName)).ToList();
-                }
-                tatolCount = jobKeyList.Count();
-                jobKeyList = jobKeyList.Skip((request.Page - 1) * request.limit).Take(request.limit).ToList();
+                //var groupNames = await scheduler.GetJobGroupNames();
+                //if (!string.IsNullOrWhiteSpace(request.JobGroup))
+                //{
+                //    groupNames = groupNames.Where(o => o.Contains(request.JobGroup)).ToList();
+                //}
+                //foreach (var groupName in groupNames.OrderBy(t => t))
+                //{
+                //    jobKeyList.AddRange(await scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(groupName)));
+                //}
+                //if (!string.IsNullOrWhiteSpace(request.JobName))
+                //{
+                //    jobKeyList = jobKeyList.Where(o => o.Name.Contains(request.JobName)).ToList();
+                //}
+                //tatolCount = jobKeyList.Count();
+                //jobKeyList = jobKeyList.Skip((request.Page - 1) * request.limit).Take(request.limit).ToList();
+
                 foreach (var jobKey in jobKeyList.OrderBy(t => t.Name))
                 {
-                    var jobDetail = await Scheduler.GetJobDetail(jobKey);
-                    var triggersList = await Scheduler.GetTriggersOfJob(jobKey);
+                    var jobDetail = await scheduler.GetJobDetail(jobKey);
+                    var triggersList = await scheduler.GetTriggersOfJob(jobKey);
                     var triggers = triggersList.AsEnumerable().FirstOrDefault();
 
                     var interval = string.Empty;
@@ -185,7 +184,7 @@ namespace QuartzJobCenter.Web.Components
                         Name = jobKey.Name,
                         LastErrMsg = jobDetail.JobDataMap.GetString(ConstantDefine.EXCEPTION),
                         RequestUrl = jobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL),
-                        TriggerState = await Scheduler.GetTriggerState(triggers.Key),
+                        TriggerState = await scheduler.GetTriggerState(triggers.Key),
                         PreviousFireTime = triggers.GetPreviousFireTimeUtc()?.LocalDateTime,
                         NextFireTime = triggers.GetNextFireTimeUtc()?.LocalDateTime,
                         BeginTime = triggers.StartTimeUtc.LocalDateTime,
@@ -204,11 +203,12 @@ namespace QuartzJobCenter.Web.Components
         /// <param name="jobGroup"></param>
         /// <param name="jobName"></param>
         /// <returns></returns>
-        public async Task<ScheduleEntity> QueryJobAsync(string jobGroup, string jobName)
+        public async Task<ScheduleEntity> QueryJobAsync(string jobGroup, string jobName, string schedulerName)
         {
             var jobKey = new JobKey(jobName, jobGroup);
-            var jobDetail = await Scheduler.GetJobDetail(jobKey);
-            var triggersList = await Scheduler.GetTriggersOfJob(jobKey);
+            var scheduler = GetScheduler(schedulerName);
+            var jobDetail = await scheduler.GetJobDetail(jobKey);
+            var triggersList = await scheduler.GetTriggersOfJob(jobKey);
             var triggers = triggersList.AsEnumerable().FirstOrDefault();
             var intervalSeconds = (triggers as SimpleTriggerImpl)?.RepeatInterval.TotalSeconds;
             var entity = new ScheduleEntity
@@ -238,15 +238,16 @@ namespace QuartzJobCenter.Web.Components
         /// <param name="jobName">任务名称</param>
         /// <param name="isDelete">停止并删除任务</param>
         /// <returns></returns>
-        public async Task<BaseResultResponse> StopOrDelScheduleJobAsync(string jobGroup, string jobName, bool isDelete = false)
+        public async Task<BaseResultResponse> StopOrDelScheduleJobAsync(string jobGroup, string jobName, string schedulerName, bool isDelete = false)
         {
             BaseResultResponse response;
+            var scheduler = GetScheduler(schedulerName);
             try
             {
-                await Scheduler.PauseJob(new JobKey(jobName, jobGroup));
+                await scheduler.PauseJob(new JobKey(jobName, jobGroup));
                 if (isDelete)
                 {
-                    await Scheduler.DeleteJob(new JobKey(jobName, jobGroup));
+                    await scheduler.DeleteJob(new JobKey(jobName, jobGroup));
                     response = new BaseResultResponse
                     {
                         Msg = "删除任务计划成功！"
@@ -276,16 +277,19 @@ namespace QuartzJobCenter.Web.Components
         /// </summary>
         /// <param name="jobName">任务名称</param>
         /// <param name="jobGroup">任务分组</param>
-        public async Task<BaseResultResponse> ResumeJobAsync(string jobGroup, string jobName)
+        /// <param name="schedulerName"></param>
+        /// <returns></returns>
+        public async Task<BaseResultResponse> ResumeJobAsync(string jobGroup, string jobName, string schedulerName)
         {
             var response = new BaseResultResponse();
+            var scheduler = GetScheduler(schedulerName);
             try
             {
                 //检查任务是否存在
                 var jobKey = new JobKey(jobName, jobGroup);
-                if (await Scheduler.CheckExists(jobKey))
+                if (await scheduler.CheckExists(jobKey))
                 {
-                    await Scheduler.ResumeJob(jobKey);
+                    await scheduler.ResumeJob(jobKey);
                     response.Msg = "恢复任务计划成功！";
                 }
                 else

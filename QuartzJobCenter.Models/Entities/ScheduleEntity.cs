@@ -5,6 +5,8 @@ namespace QuartzJobCenter.Models.Entities
 {
     public class ScheduleEntity
     {
+        public string SchedulerName { get; set; }
+
         /// <summary>
         /// 是否编辑
         /// </summary>

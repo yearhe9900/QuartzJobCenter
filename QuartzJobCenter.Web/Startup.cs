@@ -5,8 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz.Impl.AdoJobStore;
 using Quartz.Impl.AdoJobStore.Common;
+using QuartzJobCenter.Common.DapperManager;
+using QuartzJobCenter.Common.Define;
+using QuartzJobCenter.Common.Enums;
+using QuartzJobCenter.Models.Options;
 using QuartzJobCenter.Web.Components;
 using System;
+using System.Collections.Generic;
 
 namespace QuartzJobCenter.Web
 {
@@ -22,6 +27,32 @@ namespace QuartzJobCenter.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<List<SchedulerOption>>(Configuration.GetSection("SchedulerOptions"));
+
+            #region ×¢²áDapper
+            var connets = Configuration.GetSection(ConstantDefine.DbConnedtions).GetChildren();
+            var dbDic = new Dictionary<string, DapperClient>();
+            foreach (var item in connets)
+            {
+                string name = item.GetSection("Name").Value;
+                string type = item.GetSection("DBType").Value;
+                string constr = item.GetSection("ConnectionString").Value;
+                ConnectionConfig conf = new ConnectionConfig
+                {
+                    ConnectionString = constr
+                };
+                switch (type)
+                {
+                    case ConstantDefine.SqlServer:
+                        conf.DbType = EnumDbStoreType.SqlServer;
+                        break;
+                }
+                DapperClient client = new DapperClient(conf);
+                dbDic.Add(name, client);
+            }
+            services.AddClient(dbDic);
+            #endregion
+
             services.AddControllersWithViews();
             services.AddSingleton(GetScheduler());
         }
