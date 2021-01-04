@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QuartzJobCenter.Common\QuartzJobCenter.Common.csproj" />
-    <ProjectReference Include="..\QuartzJobCenter.Jobs\QuartzJobCenter.Jobs.csproj" />
     <ProjectReference Include="..\QuartzJobCenter.Models\QuartzJobCenter.Models.csproj" />
     <ProjectReference Include="..\QuartzJobCenter.Repository\QuartzJobCenter.Repository.csproj" />
     <ProjectReference Include="..\QuartzJobCenter.Service\QuartzJobCenter.Service.csproj" />

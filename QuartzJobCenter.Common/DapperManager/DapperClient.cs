@@ -28,7 +28,7 @@ namespace QuartzJobCenter.Common.DapperManager
                     //case DbStoreType.Sqlite:
                     //    _connection = new SQLiteConnection(CurrentConnectionConfig.ConnectionString);
                     //    break;
-                    Enums.EnumDbStoreType.SqlServer => new System.Data.SqlClient.SqlConnection(CurrentConnectionConfig.ConnectionString),
+                    Models.Enums.EnumDbStoreType.SqlServer => new System.Data.SqlClient.SqlConnection(CurrentConnectionConfig.ConnectionString),
                     //case Enums.EnumDbStoreType.Oracle:
                     //    _connection = new Oracle.ManagedDataAccess.Client.OracleConnection(CurrentConnectionConfig.ConnectionString);
                     //    break;

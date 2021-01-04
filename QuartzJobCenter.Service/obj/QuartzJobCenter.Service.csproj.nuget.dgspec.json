@@ -27,7 +27,11 @@
         "frameworks": {
           "net5.0": {
             "targetAlias": "net5.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Models\\QuartzJobCenter.Models.csproj": {
+                "projectPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Models\\QuartzJobCenter.Models.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -55,6 +59,14 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[12.0.3, )"
+            },
+            "Quartz": {
+              "target": "Package",
+              "version": "[3.2.3, )"
+            },
+            "Quartz.Serialization.Json": {
+              "target": "Package",
+              "version": "[3.2.3, )"
             },
             "RestSharp": {
               "target": "Package",
@@ -107,11 +119,7 @@
         "frameworks": {
           "net5.0": {
             "targetAlias": "net5.0",
-            "projectReferences": {
-              "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj": {
-                "projectPath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Common\\QuartzJobCenter.Common.csproj"
-              }
-            }
+            "projectReferences": {}
           }
         },
         "warningProperties": {

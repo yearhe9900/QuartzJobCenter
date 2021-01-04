@@ -3,13 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quartz.Impl.AdoJobStore;
-using Quartz.Impl.AdoJobStore.Common;
 using QuartzJobCenter.Common.DapperManager;
-using QuartzJobCenter.Common.Define;
-using QuartzJobCenter.Common.Enums;
+using QuartzJobCenter.Models.Define;
+using QuartzJobCenter.Models.Enums;
 using QuartzJobCenter.Models.Options;
-using QuartzJobCenter.Web.Components;
 using QuartzJobCenter.Web.ConfigureServicesExtensions;
 using System;
 using System.Collections.Generic;
@@ -55,7 +52,6 @@ namespace QuartzJobCenter.Web
             #endregion
 
             services.AddControllersWithViews();
-            services.AddSingleton(GetScheduler());
             services.AddSingletonSetting();
         }
 
@@ -84,22 +80,6 @@ namespace QuartzJobCenter.Web
             });
         }
 
-        private SchedulerCenter GetScheduler()
-        {
-            string dbProviderName = Configuration.GetSection("Quartz")["dbProviderName"];
-            string connectionString = Configuration.GetSection("Quartz")["connectionString"];
-            string driverDelegateType = dbProviderName switch
-            {
-                "MySql" => typeof(MySQLDelegate).AssemblyQualifiedName,
-                "SqlServer" => typeof(SqlServerDelegate).AssemblyQualifiedName,
-                "Npgsql" => typeof(PostgreSQLDelegate).AssemblyQualifiedName,
-                _ => throw new Exception("dbProviderName unreasonable"),
-            };
-
-            SchedulerCenter schedulerCenter = SchedulerCenter.Instance;
-            schedulerCenter.Setting(new DbProvider(dbProviderName, connectionString), driverDelegateType);
-
-            return schedulerCenter;
-        }
+    
     }
 }

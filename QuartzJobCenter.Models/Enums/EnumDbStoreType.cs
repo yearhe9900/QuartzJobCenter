@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuartzJobCenter.Common.Enums
+namespace QuartzJobCenter.Models.Enums
 {
     /// <summary>
     /// 数据库类型

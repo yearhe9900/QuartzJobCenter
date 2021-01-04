@@ -1,4 +1,4 @@
-﻿using QuartzJobCenter.Common.Enums;
+﻿using QuartzJobCenter.Models.Enums;
 
 namespace QuartzJobCenter.Common.DapperManager
 {

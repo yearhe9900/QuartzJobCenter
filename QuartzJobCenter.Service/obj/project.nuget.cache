@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "jHksJj8i88WyWsfK8RSuWH2TbVIq2f/4aSDEjVci1iHkvZt3+LXx/EMx4ScV6QfYC4/Z293Iu49KPSx2Gzbp7g==",
+  "dgSpecHash": "4ZrdU0cmA2As0Yp/4qO3PCwJtOJrZ5IDWANqYHW/K3YZKuaNDfjvkdBtoiizvmxnCp4lM4/KLq8aAGUR5vviOQ==",
   "success": true,
   "projectFilePath": "D:\\GitHub\\QuartzJobCenter\\QuartzJobCenter.Service\\QuartzJobCenter.Service.csproj",
   "expectedPackageFiles": [
@@ -17,6 +17,7 @@
     "C:\\Users\\Wei\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
     "C:\\Users\\Wei\\.nuget\\packages\\portable.bouncycastle\\1.8.8\\portable.bouncycastle.1.8.8.nupkg.sha512",
     "C:\\Users\\Wei\\.nuget\\packages\\quartz\\3.2.3\\quartz.3.2.3.nupkg.sha512",
+    "C:\\Users\\Wei\\.nuget\\packages\\quartz.serialization.json\\3.2.3\\quartz.serialization.json.3.2.3.nupkg.sha512",
     "C:\\Users\\Wei\\.nuget\\packages\\restsharp\\106.11.7\\restsharp.106.11.7.nupkg.sha512",
     "C:\\Users\\Wei\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "C:\\Users\\Wei\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",

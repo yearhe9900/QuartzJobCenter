@@ -1,0 +1,17 @@
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\bin\Debug\net5.0\QuartzJobCenter.Repository.deps.json
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\bin\Debug\net5.0\QuartzJobCenter.Repository.dll
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\bin\Debug\net5.0\ref\QuartzJobCenter.Repository.dll
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\bin\Debug\net5.0\QuartzJobCenter.Repository.pdb
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\bin\Debug\net5.0\QuartzJobCenter.Common.dll
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\bin\Debug\net5.0\QuartzJobCenter.Models.dll
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\bin\Debug\net5.0\QuartzJobCenter.Common.pdb
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\bin\Debug\net5.0\QuartzJobCenter.Models.pdb
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\QuartzJobCenter.Repository.csprojAssemblyReference.cache
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\QuartzJobCenter.Repository.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\QuartzJobCenter.Repository.AssemblyInfoInputs.cache
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\QuartzJobCenter.Repository.AssemblyInfo.cs
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\QuartzJobCenter.Repository.csproj.CoreCompileInputs.cache
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\QuartzJobCenter.Repository.csproj.CopyComplete
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\QuartzJobCenter.Repository.dll
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\ref\QuartzJobCenter.Repository.dll
+D:\GitHub\QuartzJobCenter\QuartzJobCenter.Repository\obj\Debug\net5.0\QuartzJobCenter.Repository.pdb

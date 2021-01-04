@@ -1,26 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Quartz;
+using QuartzJobCenter.Common.SchedulerManager;
 using QuartzJobCenter.Models.Entities;
 using QuartzJobCenter.Models.Model;
 using QuartzJobCenter.Models.Options;
 using QuartzJobCenter.Models.Request;
 using QuartzJobCenter.Models.Response;
-using QuartzJobCenter.Web.Components;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static QuartzJobCenter.Common.Define.EnumDefine;
+using static QuartzJobCenter.Models.Enums.EnumDefine;
 
 namespace QuartzJobCenter.Web.Controllers
 {
     public class JobTaskController : Controller
     {
-        private readonly SchedulerCenter _schedulerCenter;
+        private readonly ISchedulerCenter _schedulerCenter;
         public readonly List<SchedulerOption> _schedulerOptions;
+     
 
-        public JobTaskController(SchedulerCenter schedulerCenter, IOptions<List<SchedulerOption>> schedulerOptions)
+        public JobTaskController(ISchedulerCenter schedulerCenter, IOptions<List<SchedulerOption>> schedulerOptions)
         {
             _schedulerCenter = schedulerCenter;
             _schedulerOptions = schedulerOptions.Value;

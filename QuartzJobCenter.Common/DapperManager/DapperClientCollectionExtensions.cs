@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using QuartzJobCenter.Common.Define;
+using QuartzJobCenter.Models.Define;
 
 namespace QuartzJobCenter.Common.DapperManager
 {

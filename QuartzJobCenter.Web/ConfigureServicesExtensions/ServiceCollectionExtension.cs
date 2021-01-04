@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using QuartzJobCenter.Common.SchedulerManager;
 using System.Linq;
 using System.Reflection;
 
@@ -44,6 +45,12 @@ namespace QuartzJobCenter.Web.ConfigureServicesExtensions
             #region Validators
 
             //services.AddSingleton<IValidator<CommandStateRequest>, CommandStateValidator>();
+
+            #endregion
+
+            #region Quartz SchedulerCenter
+
+            services.AddSingleton<ISchedulerCenter, SchedulerCenter>();
 
             #endregion
 

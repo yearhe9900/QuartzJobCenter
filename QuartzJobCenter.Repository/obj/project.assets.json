@@ -162,6 +162,19 @@
           "lib/netstandard2.0/Quartz.dll": {}
         }
       },
+      "Quartz.Serialization.Json/3.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3",
+          "Quartz": "3.2.3"
+        },
+        "compile": {
+          "lib/netstandard2.0/Quartz.Serialization.Json.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Quartz.Serialization.Json.dll": {}
+        }
+      },
       "RestSharp/106.11.7": {
         "type": "package",
         "compile": {
@@ -445,6 +458,9 @@
           "MailKit": "2.10.0",
           "Microsoft.Extensions.Options": "5.0.0",
           "Newtonsoft.Json": "12.0.3",
+          "Quartz": "3.2.3",
+          "Quartz.Serialization.Json": "3.2.3",
+          "QuartzJobCenter.Models": "1.0.0",
           "RestSharp": "106.11.7",
           "System.Data.SqlClient": "4.8.2"
         },
@@ -459,8 +475,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
-          "Quartz": "3.2.3",
-          "QuartzJobCenter.Common": "1.0.0"
+          "Quartz": "3.2.3"
         },
         "compile": {
           "bin/placeholder/QuartzJobCenter.Models.dll": {}
@@ -773,6 +788,22 @@
         "quartz-logo-small.png",
         "quartz.3.2.3.nupkg.sha512",
         "quartz.nuspec"
+      ]
+    },
+    "Quartz.Serialization.Json/3.2.3": {
+      "sha512": "tWtsPuaFvIqPe60f7FXWA3fjJPQDNzD7zF5YncX8LF50BuYnq7+/hRCiZe1v1FH50gDatkOWVQ+1WRA9rmZStA==",
+      "type": "package",
+      "path": "quartz.serialization.json/3.2.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net461/Quartz.Serialization.Json.dll",
+        "lib/net461/Quartz.Serialization.Json.xml",
+        "lib/netstandard2.0/Quartz.Serialization.Json.dll",
+        "lib/netstandard2.0/Quartz.Serialization.Json.xml",
+        "quartz-logo-small.png",
+        "quartz.serialization.json.3.2.3.nupkg.sha512",
+        "quartz.serialization.json.nuspec"
       ]
     },
     "RestSharp/106.11.7": {

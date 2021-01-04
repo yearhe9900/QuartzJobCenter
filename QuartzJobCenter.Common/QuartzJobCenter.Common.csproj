@@ -9,8 +9,14 @@
     <PackageReference Include="MailKit" Version="2.10.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Quartz" Version="3.2.3" />
+    <PackageReference Include="Quartz.Serialization.Json" Version="3.2.3" />
     <PackageReference Include="RestSharp" Version="106.11.7" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuartzJobCenter.Models\QuartzJobCenter.Models.csproj" />
   </ItemGroup>
 
 </Project>

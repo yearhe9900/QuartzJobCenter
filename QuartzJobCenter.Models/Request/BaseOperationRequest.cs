@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static QuartzJobCenter.Common.Define.EnumDefine;
+﻿using static QuartzJobCenter.Models.Enums.EnumDefine;
 
 namespace QuartzJobCenter.Models.Request
 {

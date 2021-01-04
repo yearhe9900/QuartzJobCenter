@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Options;
-using QuartzJobCenter.Common.Define;
+using QuartzJobCenter.Models.Define;
 
 namespace QuartzJobCenter.Common.DapperManager
 {

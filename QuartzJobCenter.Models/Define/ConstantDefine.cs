@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuartzJobCenter.Common.Define
+namespace QuartzJobCenter.Models.Define
 {
     public struct ConstantDefine
     {

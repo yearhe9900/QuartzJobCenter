@@ -86,6 +86,9 @@
         table.render({
             elem: '#currentTableId',
             url: 'GetAllJobs',
+            where: {
+                SchedulerName: 'httpScheduler'
+            },
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter'],
             cols: [[
@@ -120,7 +123,6 @@
                     SchedulerName:'httpScheduler'
                 }
             }, 'data');
-
             return false;
         });
 

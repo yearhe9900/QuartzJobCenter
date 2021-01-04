@@ -1,55 +1,51 @@
 ﻿using Quartz;
-using Quartz.Impl.Matchers;
 using Quartz.Impl.Triggers;
 using Quartz.Util;
-using QuartzJobCenter.Common.Define;
-using QuartzJobCenter.Jobs;
 using QuartzJobCenter.Models.Entities;
 using QuartzJobCenter.Models.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static QuartzJobCenter.Common.Define.EnumDefine;
 using Quartz.Simpl;
 using Quartz.Impl.AdoJobStore;
 using Quartz.Impl;
 using Quartz.Impl.AdoJobStore.Common;
 using QuartzJobCenter.Models.Request;
-using QuartzJobCenter.Service.Abstracts;
+using QuartzJobCenter.Models.Options;
+using Microsoft.Extensions.Options;
+using System.Collections.Concurrent;
+using QuartzJobCenter.Models.Define;
+using static QuartzJobCenter.Models.Enums.EnumDefine;
+using QuartzJobCenter.Common.Job;
 
-namespace QuartzJobCenter.Web.Components
+namespace QuartzJobCenter.Common.SchedulerManager
 {
-    public class SchedulerCenter
+    public class SchedulerCenter : ISchedulerCenter
     {
-        private IScheduler _scheduler;
-        private IDbProvider _dbProvider;
-        private readonly ITaskService _taskService;
-        private string _driverDelegateType;
+        private readonly ConcurrentDictionary<string, IScheduler> _schedulerDic;
+        private readonly IDbProvider _dbProvider;
+        private readonly string _driverDelegateType;
 
-        /// <summary>
-        /// 任务调度对象
-        /// </summary>
-        public static readonly Lazy<SchedulerCenter> _lazy = new Lazy<SchedulerCenter>(() => new SchedulerCenter());
-
-        public static SchedulerCenter Instance { get { return _lazy.Value; } }
-
-        /// <summary>
-        /// 配置Scheduler 仅初始化时生效
-        /// </summary>
-        /// <param name="dbProvider"></param>
-        /// <param name="driverDelegateType"></param>
-        public void Setting(IDbProvider dbProvider, string driverDelegateType)
+        public SchedulerCenter(IOptions<QuartzOption> option)
         {
-            _driverDelegateType = driverDelegateType;
-            _dbProvider = dbProvider;
+            string dbProviderName = option.Value.DBProviderName;
+            string connectionString = option.Value.ConnectionString;
+            _driverDelegateType = dbProviderName switch
+            {
+                "MySql" => typeof(MySQLDelegate).AssemblyQualifiedName,
+                "SqlServer" => typeof(SqlServerDelegate).AssemblyQualifiedName,
+                "Npgsql" => typeof(PostgreSQLDelegate).AssemblyQualifiedName,
+                _ => throw new Exception("dbProviderName unreasonable"),
+            };
+            _dbProvider = new DbProvider(dbProviderName, connectionString);
         }
 
         private IScheduler GetScheduler(string schedulerName = "httpScheduler")
         {
-            if (_scheduler != null)
+            if (_schedulerDic != null && _schedulerDic[schedulerName] != null)
             {
-                return _scheduler;
+                return _schedulerDic[schedulerName];
             }
 
             if (_dbProvider == null || string.IsNullOrEmpty(_driverDelegateType))
@@ -69,10 +65,10 @@ namespace QuartzJobCenter.Web.Components
                 ObjectSerializer = serializer,
             };
             DirectSchedulerFactory.Instance.CreateScheduler(schedulerName, "AUTO", new DefaultThreadPool(), jobStore);
-            _scheduler = SchedulerRepository.Instance.Lookup(schedulerName).Result;
-
-            _scheduler.Start();//默认开始调度器
-            return _scheduler;
+            var scheduler = SchedulerRepository.Instance.Lookup(schedulerName).Result;
+            scheduler.Start();//默认开始调度器
+            _schedulerDic.TryAdd(schedulerName, scheduler);
+            return scheduler;
         }
 
         /// <summary>
