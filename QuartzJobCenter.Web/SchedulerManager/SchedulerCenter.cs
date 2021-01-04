@@ -104,30 +104,15 @@ namespace QuartzJobCenter.Web.SchedulerManager
                     result.Msg = "任务已存在";
                     return result;
                 }
+
                 if (entity.ScheduleType == ScheduleTypeEnum.Http)
                 {
-                    //http请求配置
-                    var httpDir = new Dictionary<string, string>()
+                    await SetScheduleJob<HttpJob>(entity);
+                    result.Code = (int)ResponseCodeEnum.Success;
+                }
+                else
                 {
-                    { ConstantDefine.REQUESTURL,entity.RequestUrl},
-                    { ConstantDefine.REQUESTPARAMETERS,entity.RequestParameters},
-                    { ConstantDefine.REQUESTTYPE, ((int)entity.RequestType).ToString()},
-                    { ConstantDefine.HEADERS, entity.Headers},
-                    { ConstantDefine.MAILMESSAGE, ((int)entity.MailMessage).ToString()},
-                };
-                    // 定义这个工作，并将其绑定到我们的IJob实现类                
-                    IJobDetail job = JobBuilder.Create<HttpJob>()
-                        .SetJobData(new JobDataMap(httpDir))
-                        .WithDescription(entity.Description)
-                        .WithIdentity(entity.JobName, entity.JobGroup)
-                        .Build();
-
-                    // 创建触发器
-                    ITrigger trigger;
-                    trigger = CreateTrigger(entity);
-
-                    // 告诉Quartz使用我们的触发器来安排作业
-                    await GetScheduler(entity.SchedulerName).ScheduleJob(job, trigger);
+                    await SetScheduleJob<GrpcJob>(entity);
                     result.Code = (int)ResponseCodeEnum.Success;
                 }
             }
@@ -137,6 +122,32 @@ namespace QuartzJobCenter.Web.SchedulerManager
                 result.Msg = ex.ToString();
             }
             return result;
+        }
+
+        private async Task SetScheduleJob<T>(ScheduleEntity entity) where T : IJob
+        {
+            //http请求配置
+            var httpDir = new Dictionary<string, string>()
+                {
+                    { ConstantDefine.REQUESTURL,entity.RequestUrl},
+                    { ConstantDefine.REQUESTPARAMETERS,entity.RequestParameters},
+                    { ConstantDefine.REQUESTTYPE, ((int)entity.RequestType).ToString()},
+                    { ConstantDefine.HEADERS, entity.Headers},
+                    { ConstantDefine.MAILMESSAGE, ((int)entity.MailMessage).ToString()},
+                };
+            // 定义这个工作，并将其绑定到我们的IJob实现类                
+            IJobDetail job = JobBuilder.Create<T>()
+                .SetJobData(new JobDataMap(httpDir))
+                .WithDescription(entity.Description)
+                .WithIdentity(entity.JobName, entity.JobGroup)
+                .Build();
+
+            // 创建触发器
+            ITrigger trigger;
+            trigger = CreateTrigger(entity);
+
+            // 告诉Quartz使用我们的触发器来安排作业
+            await GetScheduler(entity.SchedulerName).ScheduleJob(job, trigger);
         }
 
         /// <summary>

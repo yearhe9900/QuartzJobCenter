@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Web;
 using static QuartzJobCenter.Models.Enums.EnumDefine;
+using QuartzJobCenter.Common;
 
 namespace QuartzJobCenter.Web.Job
 {
@@ -25,14 +26,11 @@ namespace QuartzJobCenter.Web.Job
             var requestUrl = context.JobDetail.JobDataMap.GetString(ConstantDefine.REQUESTURL);
             requestUrl = requestUrl?.IndexOf("http") == 0 ? requestUrl : "http://" + requestUrl;
             var requestParameters = context.JobDetail.JobDataMap.GetString(ConstantDefine.REQUESTPARAMETERS);
-            var headersString = context.JobDetail.JobDataMap.GetString(ConstantDefine.HEADERS);
             var mailMessage = (MailMessageEnum)int.Parse(context.JobDetail.JobDataMap.GetString(ConstantDefine.MAILMESSAGE) ?? "0");
-            var headers = headersString != null ? JsonConvert.DeserializeObject<Dictionary<string, string>>(headersString?.Trim()) : null;
             var requestType = (RequestTypeEnum)int.Parse(context.JobDetail.JobDataMap.GetString(ConstantDefine.REQUESTTYPE));
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Restart(); //  开始监视代码运行时间
-            IRestResponse response = default;
 
             var loginfo = new LogInfoModel
             {
@@ -49,35 +47,19 @@ namespace QuartzJobCenter.Web.Job
 
             try
             {
-                var http = RestHttpHelper.Instance;
-                switch (requestType)
-                {
-                    case RequestTypeEnum.Get:
-                        response = await http.GetAsync(requestUrl, headers);
-                        break;
-                    case RequestTypeEnum.Post:
-                        response = await http.PostAsync(requestUrl, requestParameters, headers);
-                        break;
-                        //case RequestTypeEnum.Put:
-                        //    response = await http.PutAsync(requestUrl, requestParameters, headers);
-                        //    break;
-                        //case RequestTypeEnum.Delete:
-                        //    response = await http.DeleteAsync(requestUrl, headers);
-                        //    break;
-                }
-                var result = HttpUtility.HtmlEncode(response.Content);
-
+                var http = GrpcClientHelper.Instance;
+                ExcuteReply response = await http.ExcuteAsync(requestUrl, requestParameters);
                 stopwatch.Stop(); //  停止监视            
                 double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数                                
                 loginfo.EndTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 loginfo.Seconds = seconds;
-                loginfo.Result = result;
+                loginfo.Result = JsonConvert.SerializeObject(response);
 
-                if (!response.IsSuccessful)
+                if (response.Status != Stauts.Success)
                 {
-                    loginfo.ErrorMsg = response.ErrorMessage;
+                    loginfo.ErrorMsg = response.Message;
                     var loginfoJson = JsonConvert.SerializeObject(loginfo);
-                    await ErrorAsync(loginfo.JobName, new Exception(result), loginfoJson, mailMessage);
+                    await ErrorAsync(loginfo.JobName, new Exception(response.Message), loginfoJson, mailMessage);
                     context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = loginfoJson;
                 }
                 else
@@ -85,17 +67,11 @@ namespace QuartzJobCenter.Web.Job
                     var loginfoJson = JsonConvert.SerializeObject(loginfo);
                     try
                     {
-                        if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                        {
-                            loginfo.ErrorMsg = response.StatusDescription;
-                            await ErrorAsync(loginfo.JobName, new Exception(result), loginfoJson, mailMessage);
-                            context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = loginfoJson;
-                        }
                         await InformationAsync(loginfo.JobName, loginfoJson, mailMessage);
                     }
                     catch (Exception)
                     {
-                        await ErrorAsync(loginfo.JobName, new Exception(result), loginfoJson, mailMessage);
+                        await ErrorAsync(loginfo.JobName, new Exception(response.Message), loginfoJson, mailMessage);
                     }
                 }
             }
