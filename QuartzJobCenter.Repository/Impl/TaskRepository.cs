@@ -24,7 +24,7 @@ namespace QuartzJobCenter.Repository.Impl
         public async Task<ExtendResultResponse<List<QrtzJobDetailsEntity>>> QueryQrtzJobDetailsEntitiesAsync(GetAllJobsRequest request)
         {
             var list = new ExtendResultResponse<List<QrtzJobDetailsEntity>>() { };
-            string sql = @"SELECT TOP (1000) [SCHED_NAME]
+            string sql = @"SELECT [SCHED_NAME]
       ,[JOB_NAME]
       ,[JOB_GROUP]
       ,[DESCRIPTION]
@@ -36,12 +36,13 @@ namespace QuartzJobCenter.Repository.Impl
       ,[JOB_DATA]
   FROM [TASKCENTER].[dbo].[QRTZ_JOB_DETAILS](Nolock)
                   WHERE [SCHED_NAME]=@SCHED_NAME {0}
-                ORDER BY id desc   OFFSET @skip ROW  FETCH NEXT @take ROW ONLY;
+                ORDER BY [JOB_GROUP] desc   OFFSET @skip ROW  FETCH NEXT @take ROW ONLY;
                 SELECT COUNT(*) AS RecordTotal FROM [TASKCENTER].[dbo].[QRTZ_JOB_DETAILS] WHERE [SCHED_NAME]=@SCHED_NAME {0} ";
 
             DynamicParameters dbparas = new DynamicParameters();
             dbparas.Add("@skip", request.limit * (request.Page - 1));
             dbparas.Add("@take", request.limit);
+            dbparas.Add("@SCHED_NAME", request.SchedulerName);
 
             string filterSql = string.Empty;
 
@@ -57,11 +58,9 @@ namespace QuartzJobCenter.Repository.Impl
             }
             sql = string.Format(sql, filterSql);
 
-            using (var multi = await _masterClient.QueryMultipleAsync(sql, dbparas))
-            {
-                list.Data = multi.Read<QrtzJobDetailsEntity>().ToList();
-                list.Count = multi.ReadSingle<int>();
-            }
+            var (entityList, count) = await _masterClient.QueryMultipleAsync<QrtzJobDetailsEntity>(sql, dbparas);
+            list.Data = entityList;
+            list.Count = count;
             return list;
         }
 

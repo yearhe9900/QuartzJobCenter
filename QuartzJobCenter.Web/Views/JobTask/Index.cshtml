@@ -138,7 +138,7 @@
                     maxmin:true,
                     shadeClose: true,
                     area: ['50%', '100%'],
-                    content: '@Url.Action("AddOrEditJobView")',
+                    content: '@Url.Action("AddOrEditJobView")?schedulerType=0',
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -156,7 +156,7 @@
                     maxmin:true,
                     shadeClose: true,
                     area: ['50%', '100%'],
-                    content: '@Url.Action("AddOrEditJobView")?name=' + data.name + "&groupName=" + data.groupName,
+                    content: '@Url.Action("AddOrEditJobView")?schedulerType=0&name=' + data.name + "&groupName=" + data.groupName,
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -166,7 +166,7 @@
                 layer.confirm('真的暂停该任务吗', function (index) {
                     $.ajax({
                         url: "@Url.Action("DoOperationJob")",
-                        data: { name: data.name, groupName: data.groupName, operationType:0 },
+                        data: { name: data.name, groupName: data.groupName, operationType: 0, schedulerType:0 },
                         type: "Post",
                         dataType: "json",
                         success: function (data) {
@@ -188,7 +188,7 @@
                 layer.confirm('真的恢复该任务吗', function (index) {
                     $.ajax({
                         url: "@Url.Action("DoOperationJob")",
-                        data: { name: data.name, groupName: data.groupName, operationType:2 },
+                        data: { name: data.name, groupName: data.groupName, operationType: 2, schedulerType: 0 },
                         type: "Post",
                         dataType: "json",
                         success: function (data) {
@@ -211,7 +211,7 @@
                     console.log(data)
                     $.ajax({
                         url: "@Url.Action("DoOperationJob")",
-                        data: { name: data.name, groupName: data.groupName, operationType:1 },
+                        data: { name: data.name, groupName: data.groupName, operationType: 1, schedulerType: 0 },
                         type: "Post",
                         dataType: "json",
                         success: function (data) {
@@ -237,7 +237,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['80%', '80%'],
-                    content: '@Url.Action("GetJobLogs")?name=' + data.name + "&groupName=" + data.groupName,
+                    content: '@Url.Action("GetJobLogs")?schedulerType=0&name=' + data.name + "&groupName=" + data.groupName,
                 });
                 $(window).on("resize", function () {
                     layer.full(index);

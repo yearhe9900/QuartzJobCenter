@@ -17,17 +17,19 @@ using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using QuartzJobCenter.Models.Define;
 using static QuartzJobCenter.Models.Enums.EnumDefine;
-using QuartzJobCenter.Common.Job;
+using QuartzJobCenter.Web.Job;
+using QuartzJobCenter.Service.Abstracts;
 
-namespace QuartzJobCenter.Common.SchedulerManager
+namespace QuartzJobCenter.Web.SchedulerManager
 {
     public class SchedulerCenter : ISchedulerCenter
     {
         private readonly ConcurrentDictionary<string, IScheduler> _schedulerDic = new ConcurrentDictionary<string, IScheduler>();
         private readonly IDbProvider _dbProvider;
         private readonly string _driverDelegateType;
+        private readonly ITaskService _taskService;
 
-        public SchedulerCenter(IOptions<QuartzOption> option)
+        public SchedulerCenter(IOptions<QuartzOption> option, ITaskService taskService)
         {
             string dbProviderName = option.Value.DBProviderName;
             string connectionString = option.Value.ConnectionString;
@@ -39,6 +41,7 @@ namespace QuartzJobCenter.Common.SchedulerManager
                 _ => throw new Exception("dbProviderName unreasonable"),
             };
             _dbProvider = new DbProvider(dbProviderName, connectionString);
+            _taskService = taskService;
         }
 
         private IScheduler GetScheduler(string schedulerName = "httpScheduler")
@@ -142,12 +145,12 @@ namespace QuartzJobCenter.Common.SchedulerManager
         /// <returns></returns>
         public async Task<(List<JobInfoEntity>, int totalCount)> GetAllJobAsync(GetAllJobsRequest request)
         {
-            List<JobKey> jobKeyList = new List<JobKey>();
             List<JobInfoEntity> jobInfoList = new List<JobInfoEntity>();
             var tatolCount = 0;
             var scheduler = GetScheduler(request.SchedulerName);
             if (scheduler != null)
             {
+                var qrtzJobDetails = await _taskService.QueryQrtzJobDetailsEntitiesAsync(request);
                 //var groupNames = await scheduler.GetJobGroupNames();
                 //if (!string.IsNullOrWhiteSpace(request.JobGroup))
                 //{
@@ -163,8 +166,14 @@ namespace QuartzJobCenter.Common.SchedulerManager
                 //}
                 //tatolCount = jobKeyList.Count();
                 //jobKeyList = jobKeyList.Skip((request.Page - 1) * request.limit).Take(request.limit).ToList();
+                List<JobKey> jobKeyList = new List<JobKey>();
+                tatolCount = qrtzJobDetails.Count;
+                foreach (var detail in qrtzJobDetails.Data)
+                {
+                    jobKeyList.Add(new JobKey(detail.JOB_NAME, detail.JOB_GROUP));
+                }
 
-                foreach (var jobKey in jobKeyList.OrderBy(t => t.Name))
+                foreach (var jobKey in jobKeyList)
                 {
                     var jobDetail = await scheduler.GetJobDetail(jobKey);
                     var triggersList = await scheduler.GetTriggersOfJob(jobKey);

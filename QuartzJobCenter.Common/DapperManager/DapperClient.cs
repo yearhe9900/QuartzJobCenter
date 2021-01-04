@@ -101,10 +101,12 @@ namespace QuartzJobCenter.Common.DapperManager
         /// </summary>
         /// <param name="strSql">sql语句</param>
         /// <returns></returns>
-        public virtual async Task<GridReader> QueryMultipleAsync(string strSql, object param = null)
+        public virtual async Task<(List<T>, int)> QueryMultipleAsync<T>(string strSql, object param = null)
         {
             using IDbConnection conn = Connection;
-            return await conn.QueryMultipleAsync(strSql, param);
+            conn.Open();
+            using var multi = await conn.QueryMultipleAsync(strSql, param);
+            return (multi.Read<T>().ToList(), multi.ReadSingle<int>());
         }
 
         /// <summary>

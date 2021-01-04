@@ -30,11 +30,13 @@ namespace QuartzJobCenter.Common.Helper
             /// </summary>
             Dictionary<string, RestClient> dictionary = new Dictionary<string, RestClient>();
             var uri = new Uri(url);
-            var key = uri.Scheme + uri.Host;
+            var key = $"{uri.Scheme}://{uri.Authority}";
             if (!dictionary.Keys.Contains(key))
             {
-                var client = new RestClient(uri.Scheme + "://" + uri.Host);
-                client.Timeout = 6000;//设置超时时间
+                var client = new RestClient(key)
+                {
+                    Timeout = 6000//设置超时时间
+                };
                 dictionary.Add(key, client);
             }
             return (dictionary[key], uri);
@@ -86,12 +88,10 @@ namespace QuartzJobCenter.Common.Helper
         /// <summary>
         /// POST请求
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">url地址</param>
-        /// <param name="t">Body实体</param>
         /// <param name="headers">请求头</param>
         /// <returns></returns>
-        public async Task<IRestResponse> PostAsync<T>(string url, T t, Dictionary<string, string> headers = null)
+        public async Task<IRestResponse> PostAsync(string url, object body, Dictionary<string, string> headers = null)
         {
             var (client, uri) = GetRestClient(url);
             var localPath = uri.LocalPath;
@@ -99,12 +99,15 @@ namespace QuartzJobCenter.Common.Helper
             var request = new RestRequest(localPath, Method.POST);//创建一个POST请求
             AddQueryParameters(request, query);
             AddRequestHeader(request, headers);
-            request.AddJsonBody(t);
+            if (body != null)
+            {
+                request.AddJsonBody(body);
+            }
             return await client.ExecuteAsync(request);
         }
 
         #endregion
- 
+
         #region 私有方法 
 
         /// <summary>

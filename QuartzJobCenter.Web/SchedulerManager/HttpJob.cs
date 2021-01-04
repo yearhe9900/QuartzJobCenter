@@ -10,8 +10,9 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Web;
 using static QuartzJobCenter.Models.Enums.EnumDefine;
+using NLog;
 
-namespace QuartzJobCenter.Common.Job
+namespace QuartzJobCenter.Web.Job
 {
     [DisallowConcurrentExecution]
     [PersistJobDataAfterExecution]
@@ -69,33 +70,33 @@ namespace QuartzJobCenter.Common.Job
 
                 stopwatch.Stop(); //  停止监视            
                 double seconds = stopwatch.Elapsed.TotalSeconds;  //总秒数                                
-                loginfo.EndTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                loginfo.EndTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 loginfo.Seconds = seconds;
                 loginfo.Result = result;
+
                 if (!response.IsSuccessful)
                 {
-                    loginfo.ErrorMsg = result;
-                    await ErrorAsync(loginfo.JobName, new Exception(result), JsonConvert.SerializeObject(loginfo), mailMessage);
-                    context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = JsonConvert.SerializeObject(loginfo);
+                    loginfo.ErrorMsg = response.ErrorMessage;
+                    var loginfoJson = JsonConvert.SerializeObject(loginfo);
+                    await ErrorAsync(loginfo.JobName, new Exception(result), loginfoJson, mailMessage);
+                    context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = loginfoJson;
                 }
                 else
                 {
+                    var loginfoJson = JsonConvert.SerializeObject(loginfo);
                     try
                     {
-                        //这里需要和请求方约定好返回结果约定为HttpResultModel模型
-                        var httpResult = JsonConvert.DeserializeObject<HttpResultModel>(HttpUtility.HtmlDecode(result));
-                        if (!httpResult.IsSuccess)
+                        if (response.StatusCode != System.Net.HttpStatusCode.OK)
                         {
-                            loginfo.ErrorMsg = httpResult.ErrorMsg;
-                            await ErrorAsync(loginfo.JobName, new Exception(httpResult.ErrorMsg), JsonConvert.SerializeObject(loginfo), mailMessage);
-                            context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = JsonConvert.SerializeObject(loginfo);
+                            loginfo.ErrorMsg = response.StatusDescription;
+                            await ErrorAsync(loginfo.JobName, new Exception(result), loginfoJson, mailMessage);
+                            context.JobDetail.JobDataMap[ConstantDefine.EXCEPTION] = loginfoJson;
                         }
-                        else
-                            await InformationAsync(loginfo.JobName, JsonConvert.SerializeObject(loginfo), mailMessage);
+                        await InformationAsync(loginfo.JobName, loginfoJson, mailMessage);
                     }
                     catch (Exception)
                     {
-                        await InformationAsync(loginfo.JobName, JsonConvert.SerializeObject(loginfo), mailMessage);
+                        await ErrorAsync(loginfo.JobName, new Exception(result), loginfoJson, mailMessage);
                     }
                 }
             }

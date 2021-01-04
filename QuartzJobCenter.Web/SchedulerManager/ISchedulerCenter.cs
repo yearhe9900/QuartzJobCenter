@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using QuartzJobCenter.Models.Request;
 
-namespace QuartzJobCenter.Common.SchedulerManager
+namespace QuartzJobCenter.Web.SchedulerManager
 {
     public interface ISchedulerCenter
     {

@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Quartz;
-using QuartzJobCenter.Common.SchedulerManager;
 using QuartzJobCenter.Models.Entities;
 using QuartzJobCenter.Models.Model;
 using QuartzJobCenter.Models.Options;
 using QuartzJobCenter.Models.Request;
 using QuartzJobCenter.Models.Response;
+using QuartzJobCenter.Web.SchedulerManager;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace QuartzJobCenter.Web.Controllers
     {
         private readonly ISchedulerCenter _schedulerCenter;
         public readonly List<SchedulerOption> _schedulerOptions;
-     
+
 
         public JobTaskController(ISchedulerCenter schedulerCenter, IOptions<List<SchedulerOption>> schedulerOptions)
         {
@@ -38,6 +38,7 @@ namespace QuartzJobCenter.Web.Controllers
         public async Task<IActionResult> AddOrEditJobViewAsync(string name, string groupName, int schedulerType)
         {
             var schedulerName = _schedulerOptions.Where(o => o.ScheduleTypeId == schedulerType).FirstOrDefault().SchedulerName;
+            ViewBag.SchedulerName = schedulerName;
             if (!string.IsNullOrWhiteSpace(name) & !string.IsNullOrWhiteSpace(groupName))
             {
                 var queryJobInfo = await _schedulerCenter.QueryJobAsync(groupName, name, schedulerName);
@@ -106,9 +107,12 @@ namespace QuartzJobCenter.Web.Controllers
             var schedulerName = _schedulerOptions.Where(o => o.ScheduleTypeId == schedulerType).FirstOrDefault().SchedulerName;
             var jobLogs = await _schedulerCenter.GetJobLogsAsync(new JobKey(name, groupName), schedulerName);
             List<LogInfoModel> logInfoModels = new List<LogInfoModel>();
-            foreach (var log in jobLogs)
+            if (jobLogs != null)
             {
-                logInfoModels.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<LogInfoModel>(log));
+                foreach (var log in jobLogs)
+                {
+                    logInfoModels.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<LogInfoModel>(log));
+                }
             }
             return View(logInfoModels);
         }

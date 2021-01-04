@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using QuartzJobCenter.Common.SchedulerManager;
+using QuartzJobCenter.Web.SchedulerManager;
 using System.Linq;
 using System.Reflection;
 
