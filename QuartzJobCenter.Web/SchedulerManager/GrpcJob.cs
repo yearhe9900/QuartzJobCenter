@@ -15,7 +15,7 @@ namespace QuartzJobCenter.Web.Job
 {
     [DisallowConcurrentExecution]//不允许此 Job 并发执行任务
     [PersistJobDataAfterExecution]
-    public class HttpJob : IJob
+    public class GrpcJob : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {

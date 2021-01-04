@@ -6,6 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="GrpcSource\**" />
+    <Content Remove="GrpcSource\**" />
+    <EmbeddedResource Remove="GrpcSource\**" />
+    <None Remove="GrpcSource\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.32.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.0" />
     <PackageReference Include="NLog" Version="4.7.6" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.10.0" />
