@@ -115,8 +115,8 @@
                 var requestType = 0;
                 switch (Model.RequestType)
                 {
-                    case QuartzJobCenter.Models.Enums.EnumDefine.RequestTypeEnum.Get:requestType = 0;break;
-                    case QuartzJobCenter.Models.Enums.EnumDefine.RequestTypeEnum.Post: requestType = 1; break;
+                    case QuartzJobCenter.Models.Enums.EnumDefine.RequestTypeEnum.Get:requestType = 1;break;
+                    case QuartzJobCenter.Models.Enums.EnumDefine.RequestTypeEnum.Post: requestType = 2; break;
                     default:requestType = 0;break;
                 }
                 var beginTime = Html.Raw(Model.BeginTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -128,7 +128,7 @@
                 , "JobGroup": '@Html.Raw(Model.JobGroup)'
                 , "JobName": '@Html.Raw(Model.JobName)'
                 , "RequestUrl": '@Html.Raw(Model.RequestUrl)'
-                , "RequestType":@requestType
+                , "RequestType":"@requestType"
                 , "BeginTime": '@beginTime'
                 , "EndTime": '@endTime'
                 , "Cron": '@Html.Raw(Model.Cron)'
