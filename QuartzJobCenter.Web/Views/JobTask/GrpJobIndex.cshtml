@@ -1,0 +1,267 @@
+﻿@{
+    ViewData["Title"] = "GRPC任务列表";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+</head>
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+
+            <fieldset class="table-search-fieldset">
+                <legend>搜索信息</legend>
+                <div style="margin: 10px 10px 10px 10px">
+                    <form class="layui-form layui-form-pane" action="">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">任务组名</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="JobGroup" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">任务名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="JobName" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </fieldset>
+
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add">添加</button>
+                </div>
+            </script>
+
+            <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+            <script type="text/html" id="currentTableBar">
+                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="log">日志</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+                {{# if (d.triggerState=== 0||d.triggerState=== 3||d.triggerState=== 4) { }}
+                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="stop">暂停</a>
+                {{# } else if (d.triggerState=== 1) { }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="resume">恢复</a>
+                {{# } }}
+                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="remove">删除</a>
+            </script>
+            <script type="text/html" id="lastErrMsgBar">
+                {{# if (d.lastErrMsg) { }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="errMsg">最后异常</a>
+                {{# } else { }}
+                <span>无</span>
+                {{# } }}
+            </script>
+            <script type="text/html" id="descriptionBar">
+                {{# if (d.description) { }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="description">描述详情</a>
+                {{# } else { }}
+                <span>无</span>
+                {{# } }}
+            </script>
+        </div>
+    </div>
+    <script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+    <script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: 'GetAllJobs',
+            where: {
+                SchedulerName: 'grpcScheduler'
+            },
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter'],
+            cols: [[
+                { field: 'groupName',  title: '任务组名'},
+                { field: 'name',  title: '任务名称'},
+                { field: 'displayState', title: '任务状态'},
+                { field: 'requestUrl', maxWidth: 200, title: '请求地址'},
+                { title: '异常信息', toolbar: '#lastErrMsgBar', align: "center" },
+                { field: 'beginTime', title: '开始时间'},
+                { field: 'previousFireTime', title: '上次执行时间'},
+                { field: 'nextFireTime', title: '下次执行时间'},
+                { field: 'interval', width: 135, title: '执行计划' },
+                { title: '描述', maxWidth: 80, toolbar: '#descriptionBar', align: "center" },
+                { title: '操作',minWidth:250,  toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 20,
+            page: true
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = data.field;
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    JobGroup: result.JobGroup,
+                    JobName: result.JobName,
+                    SchedulerName:'grpcScheduler'
+                }
+            }, 'data');
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加任务',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['50%', '100%'],
+                    content: '@Url.Action("AddOrEditGrpcJobView")?schedulerType=1',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+                var index = layer.open({
+                    title: '编辑任务',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['50%', '100%'],
+                    content: '@Url.Action("AddOrEditGrpcJobView")?schedulerType=1&name=' + data.name + "&groupName=" + data.groupName,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'stop') {
+                layer.confirm('真的暂停该任务吗', function (index) {
+                    $.ajax({
+                        url: "@Url.Action("DoOperationJob")",
+                        data: { name: data.name, groupName: data.groupName, operationType: 0, schedulerType:1 },
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 0) {
+                                table.reload('currentTableId');
+                                layer.msg(data.msg, { icon: 6 });
+                            }
+                            else {
+                                layer.msg(data.msg, { icon: 5 });
+                            }
+                        },
+                      error: function (data) {
+                          $.messager.alert('错误', data.msg);
+                      }
+                  });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'resume') {
+                layer.confirm('真的恢复该任务吗', function (index) {
+                    $.ajax({
+                        url: "@Url.Action("DoOperationJob")",
+                        data: { name: data.name, groupName: data.groupName, operationType: 2, schedulerType: 1 },
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 0) {
+                                table.reload('currentTableId');
+                                layer.msg(data.msg, { icon: 6 });
+                            }
+                            else {
+                                layer.msg(data.msg, { icon: 5 });
+                            }
+                        },
+                      error: function (data) {
+                          $.messager.alert('错误', data.msg);
+                      }
+                  });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'remove') {
+                layer.confirm('真的移除该任务吗', function (index) {
+                    console.log(data)
+                    $.ajax({
+                        url: "@Url.Action("DoOperationJob")",
+                        data: { name: data.name, groupName: data.groupName, operationType: 1, schedulerType: 1 },
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 0) {
+                                obj.del();
+                                layer.msg(data.msg, { icon: 6 });
+                            }
+                            else {
+                                layer.msg(data.msg, { icon: 5 });
+                            }
+                        },
+                      error: function (data) {
+                          $.messager.alert('错误', data.msg);
+                      }
+                  });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'log') {
+                var index = layer.open({
+                    title: '查看运行日志',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['80%', '80%'],
+                    content: '@Url.Action("GetJobLogs")?schedulerType=1&name=' + data.name + "&groupName=" + data.groupName,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+
+            } else if (obj.event === 'errMsg') {
+                if (data.lastErrMsg) {
+                    layer.alert(data.lastErrMsg);
+                }
+                else {
+                    layer.alert("无");
+                }
+            } else if (obj.event === 'description') {
+                if (data.description) {
+                    layer.alert(data.description);
+                }
+                else {
+                    layer.alert("无");
+                }
+            }
+        });
+
+    });
+    </script>
+
+</body>
+</html>

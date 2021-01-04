@@ -46,7 +46,7 @@ namespace QuartzJobCenter.Web.SchedulerManager
 
         private IScheduler GetScheduler(string schedulerName = "httpScheduler")
         {
-            if (_schedulerDic != null && _schedulerDic.Count() > 0 && _schedulerDic[schedulerName] != null)
+            if (_schedulerDic != null && _schedulerDic.Count() > 0 && _schedulerDic.ContainsKey(schedulerName))
             {
                 return _schedulerDic[schedulerName];
             }

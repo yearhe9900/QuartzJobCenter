@@ -23,7 +23,7 @@
         },
         {
           "title": "GPRC任务列表",
-          "href": "JobTask/LogView",
+          "href": "JobTask/GrpJobIndex",
           "icon": "fa fa-list",
           "target": "_self"
         }

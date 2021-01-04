@@ -1,0 +1,144 @@
+﻿@model QuartzJobCenter.Models.Entities.ScheduleEntity
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <form class="layui-form layuimini-form" lay-filter="jobTaskForm">
+        <input type="text" name="IsEdit" value="0" class="layui-hide">
+        <input type="text" name="OldGroupName" value="0" class="layui-hide">
+        <input type="text" name="OldName" value="0" class="layui-hide">
+        <input type="text" name="SchedulerName" value="@ViewBag.SchedulerName" class="layui-hide">
+        <input type="text" name="ScheduleType" value="1" class="layui-hide">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">任务组名</label>
+            <div class="layui-input-block">
+                <input type="text" name="JobGroup" lay-verify="required" lay-reqtext="任务组名不能为空" placeholder="请输入任务组名" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">任务名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="JobName" lay-verify="required" lay-reqtext="任务名称不能为空" placeholder="请输入任务名称" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">请求地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="RequestUrl" lay-verify="required" lay-reqtext="请求地址不能为空" placeholder="请输入请求地址" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">开始时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" lay-verify="required" name="BeginTime" id="BeginTime" placeholder="请选择任务开始时间">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">结束时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="EndTime" id="EndTime" placeholder="请选择任务结束时间">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">Cron表达式</label>
+            <div class="layui-input-block">
+                <input type="text" name="Cron" lay-verify="required" lay-reqtext="Cron表达式不能为空" placeholder="请输入Cron表达式" value="" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">请求参数</label>
+            <div class="layui-input-block">
+                <textarea name="RequestParameters" class="layui-textarea" placeholder="请输入请求参数（json字符串，PUT或POST使用）"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">任务描述</label>
+            <div class="layui-input-block">
+                <textarea name="Description" class="layui-textarea" placeholder="请输入任务描述"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+            </div>
+        </div>
+    </form>
+    <script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+    <script>
+        layui.use(['form', 'laydate'], function () {
+            var form = layui.form,
+                layer = layui.layer,
+                $ = layui.$;
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#BeginTime'
+                , type: 'datetime'
+            });
+            laydate.render({
+                elem: '#EndTime'
+                , type: 'datetime'
+            });
+
+            @if (Model != null)
+            {
+                var beginTime = Html.Raw(Model.BeginTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+                var endTime = Html.Raw(Model.EndTime.HasValue?Model.EndTime.Value.ToString("yyyy-MM-dd HH:mm:ss") :"");
+                <text>  form.val('jobTaskForm', {
+                "IsEdit": "1"
+                , "OldGroupName": '@Html.Raw(Model.JobGroup)'
+                , "OldName": '@Html.Raw(Model.JobName)'
+                , "JobGroup": '@Html.Raw(Model.JobGroup)'
+                , "JobName": '@Html.Raw(Model.JobName)'
+                , "RequestUrl": '@Html.Raw(Model.RequestUrl)'
+                , "ScheduleType":"1"
+                , "BeginTime": '@beginTime'
+                , "EndTime": '@endTime'
+                , "Cron": '@Html.Raw(Model.Cron)'
+                , "RequestParameters": '@Html.Raw(Model.RequestParameters)'
+                , "Description": '@Html.Raw(Model.Description)'
+                });</text>
+            }
+
+            //监听提交
+            form.on('submit(saveBtn)', function (data) {
+                  $.ajax({
+                url: "@Url.Action("AddOrEditJob")",
+                      data: data.field,
+                      type: "Post",
+                      dataType: "json",
+                      success: function (data) {
+                        if (data.code == 0) {
+                            layer.msg(data.msg, { icon: 6 });
+                        } else {
+                            layer.msg(data.msg, { icon: 5 });
+                        }
+                    },
+                      error: function (data) {
+                          $.messager.alert('错误', data.msg);
+                    }
+                });
+                return false;
+            });
+
+        });
+    </script>
+</body>
+</html>

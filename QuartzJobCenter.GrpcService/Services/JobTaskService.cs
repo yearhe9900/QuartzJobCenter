@@ -17,6 +17,7 @@ namespace QuartzJobCenter.GrpcService
 
         public override Task<ExcuteReply> Excute(ExcuteRequest request, ServerCallContext context)
         {
+            Console.Out.WriteLine(request.Params);
             return Task.FromResult(new ExcuteReply
             {
                 Message = "Hello " + request.Params,

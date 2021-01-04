@@ -30,12 +30,24 @@ namespace QuartzJobCenter.Web.Controllers
         {
             return View();
         }
-        public IActionResult LogView()
+        public IActionResult GrpJobIndex()
         {
             return View();
         }
 
         public async Task<IActionResult> AddOrEditJobViewAsync(string name, string groupName, int schedulerType)
+        {
+            var schedulerName = _schedulerOptions.Where(o => o.ScheduleTypeId == schedulerType).FirstOrDefault().SchedulerName;
+            ViewBag.SchedulerName = schedulerName;
+            if (!string.IsNullOrWhiteSpace(name) & !string.IsNullOrWhiteSpace(groupName))
+            {
+                var queryJobInfo = await _schedulerCenter.QueryJobAsync(groupName, name, schedulerName);
+                return View(queryJobInfo);
+            }
+            return View(null);
+        }
+
+        public async Task<IActionResult> AddOrEditGrpcJobView(string name, string groupName, int schedulerType)
         {
             var schedulerName = _schedulerOptions.Where(o => o.ScheduleTypeId == schedulerType).FirstOrDefault().SchedulerName;
             ViewBag.SchedulerName = schedulerName;

@@ -36,7 +36,7 @@ namespace QuartzJobCenter.Repository.Impl
       ,[JOB_DATA]
   FROM [TASKCENTER].[dbo].[QRTZ_JOB_DETAILS](Nolock)
                   WHERE [SCHED_NAME]=@SCHED_NAME {0}
-                ORDER BY [JOB_GROUP] desc   OFFSET @skip ROW  FETCH NEXT @take ROW ONLY;
+                ORDER BY [JOB_GROUP],[JOB_NAME] desc   OFFSET @skip ROW  FETCH NEXT @take ROW ONLY;
                 SELECT COUNT(*) AS RecordTotal FROM [TASKCENTER].[dbo].[QRTZ_JOB_DETAILS] WHERE [SCHED_NAME]=@SCHED_NAME {0} ";
 
             DynamicParameters dbparas = new DynamicParameters();
