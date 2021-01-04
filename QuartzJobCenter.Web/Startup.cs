@@ -26,6 +26,7 @@ namespace QuartzJobCenter.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<List<SchedulerOption>>(Configuration.GetSection("SchedulerOptions"));
+            services.Configure<QuartzOption>(Configuration.GetSection("QuartzOptions"));
 
             #region ×¢²áDapper
             var connets = Configuration.GetSection(ConstantDefine.DbConnedtions).GetChildren();

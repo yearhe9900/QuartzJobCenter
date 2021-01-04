@@ -47,7 +47,7 @@
                 <input type="radio" name="RequestType" value="1" title="GET" checked="">
                 <input type="radio" name="RequestType" value="2" title="POST">
                 @*<input type="radio" name="RequestType" value="3" title="PUT">
-                <input type="radio" name="RequestType" value="4" title="DELETE">*@
+                    <input type="radio" name="RequestType" value="4" title="DELETE">*@
             </div>
         </div>
         <div class="layui-form-item">
@@ -114,8 +114,8 @@
                 var requestType = 0;
                 switch (Model.RequestType)
                 {
-                    case QuartzJobCenter.Common.Define.EnumDefine.RequestTypeEnum.Get:requestType = 0;break;
-                    case QuartzJobCenter.Common.Define.EnumDefine.RequestTypeEnum.Post: requestType = 1; break;
+                    case QuartzJobCenter.Models.Enums.EnumDefine.RequestTypeEnum.Get:requestType = 0;break;
+                    case QuartzJobCenter.Models.Enums.EnumDefine.RequestTypeEnum.Post: requestType = 1; break;
                     default:requestType = 0;break;
                 }
                 var beginTime = Html.Raw(Model.BeginTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));

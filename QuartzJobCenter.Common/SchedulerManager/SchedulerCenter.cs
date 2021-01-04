@@ -23,7 +23,7 @@ namespace QuartzJobCenter.Common.SchedulerManager
 {
     public class SchedulerCenter : ISchedulerCenter
     {
-        private readonly ConcurrentDictionary<string, IScheduler> _schedulerDic;
+        private readonly ConcurrentDictionary<string, IScheduler> _schedulerDic = new ConcurrentDictionary<string, IScheduler>();
         private readonly IDbProvider _dbProvider;
         private readonly string _driverDelegateType;
 
@@ -43,7 +43,7 @@ namespace QuartzJobCenter.Common.SchedulerManager
 
         private IScheduler GetScheduler(string schedulerName = "httpScheduler")
         {
-            if (_schedulerDic != null && _schedulerDic[schedulerName] != null)
+            if (_schedulerDic != null && _schedulerDic.Count() > 0 && _schedulerDic[schedulerName] != null)
             {
                 return _schedulerDic[schedulerName];
             }
