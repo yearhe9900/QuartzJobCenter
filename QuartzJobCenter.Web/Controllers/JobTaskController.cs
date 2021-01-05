@@ -123,7 +123,9 @@ namespace QuartzJobCenter.Web.Controllers
             {
                 foreach (var log in jobLogs)
                 {
-                    logInfoModels.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<LogInfoModel>(log));
+                    var info = Newtonsoft.Json.JsonConvert.DeserializeObject<LogInfoModel>(log);
+                    info.RequestType = schedulerType == 1 ? "GRPC" : info.RequestType;
+                    logInfoModels.Add(info);
                 }
             }
             return View(logInfoModels);
